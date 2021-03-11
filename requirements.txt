@@ -9,3 +9,4 @@ Pillow~=8.1.2
 setuptools~=54.1.1
 marshmallow~=3.10.0
 apispec~=4.3.0
+PyYAML~=5.4.1
