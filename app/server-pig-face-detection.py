@@ -1,11 +1,12 @@
 from flask import Flask, jsonify, request, render_template, redirect, abort, send_from_directory, Response
 from PIL import Image as Pil_Image
+from apispec import APISpec
 from flask_bootstrap import Bootstrap
 from flask_apispec import use_kwargs, marshal_with
 from flask_apispec.extension import FlaskApiSpec
 import marshmallow as ma
 from flask import Flask
-from apispec import APISpec
+
 from apispec.ext.marshmallow import MarshmallowPlugin
 
 import flask_apispec
@@ -15,6 +16,9 @@ import numpy as np
 import jsonpickle
 import base64
 import io
+
+
+
 from util import logger_init
 
 from flask_apispec import marshal_with, use_kwargs
@@ -40,7 +44,7 @@ class ImageSchema(ma.Schema):
 
 @app.route("/api/swagger.json")
 def create_swagger_spec():
-    return jsonify(spec.to_dict())
+    return jsonify(APISpec.spec.to_dict())
 
 
 @app.route("/upload-image", methods=["GET", "POST"])
