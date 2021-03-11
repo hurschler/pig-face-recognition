@@ -1,15 +1,13 @@
 from flask import Flask, jsonify, request, render_template, redirect, abort, send_from_directory, Response
-from flask_swagger_ui import get_swaggerui_blueprint
-from flask_bootstrap import Bootstrap
-from src.api_spec import spec
 from PIL import Image as Pil_Image
-import marshmallow as ma
-from flask_smorest import Api, Blueprint, abort
-from flask import Flask
+from flask_bootstrap import Bootstrap
 from flask_apispec import use_kwargs, marshal_with
+from flask_apispec.extension import FlaskApiSpec
+import marshmallow as ma
+from flask import Flask
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from flask_apispec.extension import FlaskApiSpec
+import flask_apispec
 
 import os
 import cv2
@@ -17,6 +15,12 @@ import numpy as np
 import jsonpickle
 import base64
 import io
+
+from flask_apispec import marshal_with, use_kwargs
+
+import detection
+import pixellibext
+import recognition
 
 SWAGGER_URL = '/api/docs'
 API_URL = "/api/swagger.json"

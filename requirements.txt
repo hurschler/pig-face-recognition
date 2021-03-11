@@ -2,3 +2,10 @@ opencv-python~=4.5.1.48
 numpy~=1.19.5
 matplotlib~=3.3.3
 tensorflow-gpu~=2.4.1
+
+jsonpickle~=2.0.0
+Flask~=1.1.2
+Pillow~=8.1.2
+setuptools~=54.1.1
+marshmallow~=3.10.0
+apispec~=4.3.0
