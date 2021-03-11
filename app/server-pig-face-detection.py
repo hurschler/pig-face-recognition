@@ -24,7 +24,7 @@ from util import logger_init
 from flask_apispec import marshal_with, use_kwargs
 
 import detection
-import pixellibext
+import pixellib
 import recognition
 
 SWAGGER_URL = '/api/docs'
