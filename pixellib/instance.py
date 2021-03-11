@@ -15,7 +15,7 @@ from imantics import Polygons, Mask
 import numpy as np
 from PIL import Image
 import config as project_config
-import detection_util
+import util.detection_util as detection_util
 
 
 class configuration(Config):

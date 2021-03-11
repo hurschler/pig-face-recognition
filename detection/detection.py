@@ -10,7 +10,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
 train_maskrcnn = instance_custom_training()
 train_maskrcnn.modelConfig(network_backbone = "resnet101", num_classes=1, batch_size=5)
-train_maskrcnn.load_pretrained_model("model/mask_rcnn_coco.h5")
+train_maskrcnn.load_pretrained_model("../model/mask_rcnn_coco.h5")
 
 # Model Training
 # train_maskrcnn.load_dataset("images")
@@ -22,7 +22,7 @@ print("start segemntation")
 segment_image = custom_segmentation()
 segment_image.inferConfig(num_classes=1, class_names=["PigFace"], detection_threshold=0.95)
 # segment_image.load_model("model/model.h5")
-segment_image.load_model("model/mask_rcnn_model.006-0.181393.h5")
+segment_image.load_model("../model/mask_rcnn_model.006-0.181393.h5")
 
 
 dir_path = project_config.image_train_dir_path
