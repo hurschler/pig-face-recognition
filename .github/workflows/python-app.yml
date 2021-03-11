@@ -34,5 +34,4 @@ jobs:
     - name: Test with pytest
       run: |
         pip install -e .
-        python -m pip install ./util
         pytest
