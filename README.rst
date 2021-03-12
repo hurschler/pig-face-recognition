@@ -6,11 +6,11 @@
 |  |stars| |forks| |contributors|
 |  |tidelift| |twitter-coveragepy| |twitter-nedbat|
 
-|test-status| image:: https://github.com/nedbat/coveragepy/actions/workflows/testsuite.yml/badge.svg?branch=master&event=push
-    :target: https://github.com/nedbat/coveragepy/actions/workflows/testsuite.yml
+|test-status| image:: https://github.com/hurschler/pig-face-recognition/coveragepy/actions/workflows/testsuite.yml/badge.svg?branch=master&event=push
+    :target: https://github.com/hurschler/pig-face-recognition/coveragepy/actions/workflows/testsuite.yml
     :alt: Test suite status
-.. |quality-status| image:: https://github.com/nedbat/coveragepy/actions/workflows/quality.yml/badge.svg?branch=master&event=push
-    :target: https://github.com/nedbat/coveragepy/actions/workflows/quality.yml
+.. |quality-status| image:: https://github.com/hurschler/pig-face-recognition/coveragepy/actions/workflows/quality.yml/badge.svg?branch=master&event=push
+    :target: https://github.com/hurschler/pig-face-recognition/coveragepy/actions/workflows/quality.yml
     :alt: Quality check status
 .. |docs| image:: https://readthedocs.org/projects/coverage/badge/?version=latest&style=flat
     :target: https://coverage.readthedocs.io/
@@ -46,13 +46,13 @@
     :target: https://tidelift.com/subscription/pkg/pypi-coverage?utm_source=pypi-coverage&utm_medium=referral&utm_campaign=readme
     :alt: Tidelift
 .. |stars| image:: https://img.shields.io/github/stars/nedbat/coveragepy.svg?logo=github
-    :target: https://github.com/nedbat/coveragepy/stargazers
+    :target: https://github.com/hurschler/pig-face-recognition/coveragepy/stargazers
     :alt: Github stars
 .. |forks| image:: https://img.shields.io/github/forks/nedbat/coveragepy.svg?logo=github
-    :target: https://github.com/nedbat/coveragepy/network/members
+    :target: https://github.com/hurschler/pig-face-recognition/coveragepy/network/members
     :alt: Github forks
 .. |contributors| image:: https://img.shields.io/github/contributors/nedbat/coveragepy.svg?logo=github
-    :target: https://github.com/nedbat/coveragepy/graphs/contributors
+    :target: https://github.com/hurschler/pig-face-recognition/coveragepy/graphs/contributors
     :alt: Contributors
 .. |twitter-coveragepy| image:: https://img.shields.io/twitter/follow/coveragepy.svg?label=coveragepy&style=flat&logo=twitter&logoColor=4FADFF
     :target: https://twitter.com/coveragepy
