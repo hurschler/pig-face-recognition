@@ -171,10 +171,16 @@ def get_image():
 def get_image_json():
     image_path = '../sample/DSC_V1_6460_2238.mask.png' # point to your image location
     encoded_img = get_response_image(image_path)
-    my_message = 'pig' # create your message as per your need
-    response =  { 'Status' : 'Success', 'message': my_message , 'ImageBytes': encoded_img}
+    numberOfPigs = 1
+    imageId = 42
+    response =  { 'Status' : 'Success', 'numberOfPigs': numberOfPigs , 'imageId': imageId, 'ImageBytes': encoded_img}
     return jsonify(response) # send the result to client
 
+
+@app.route('/api/recognizepig')
+def recognize_pig():
+    
+    return ''
 
 
 
