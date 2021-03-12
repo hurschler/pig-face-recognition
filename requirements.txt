@@ -28,7 +28,5 @@ opencv-python
 Image
 flask-swagger-ui
 flask-apispec
-util~=0.0.0
 tensorflow-gpu~=2.4.1
 pyexiv2~=2.5.0
-app~=0.0.0
