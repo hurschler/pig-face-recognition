@@ -7,6 +7,7 @@ import marshmallow as ma
 from flask import Flask
 from flask import current_app as app
 from flask import send_file
+from base64 import encodebytes
 from apispec.ext.marshmallow import MarshmallowPlugin
 
 import flask_apispec
@@ -166,6 +167,16 @@ def get_image():
     return send_file('../sample/DSC_V1_6460_2238.mask.png', attachment_filename='DSC_V1_6460_2238.mask.png', mimetype='image/png')
 
 
+@app.route('/api/getimagejson')
+def get_image_json():
+    image_path = '../sample/DSC_V1_6460_2238.mask.png' # point to your image location
+    encoded_img = get_response_image(image_path)
+    my_message = 'pig' # create your message as per your need
+    response =  { 'Status' : 'Success', 'message': my_message , 'ImageBytes': encoded_img}
+    return jsonify(response) # send the result to client
+
+
+
 
 @use_kwargs(ImageSchema)
 @marshal_with(ImageSchema)
@@ -175,6 +186,12 @@ def put(**kwargs):
     print(**kwargs)
     return Response(response='pet', status=200, mimetype="application/json")
 
+def get_response_image(image_path):
+    pil_img = Pil_Image.open(image_path, mode='r') # reads the PIL image
+    byte_arr = io.BytesIO()
+    pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
+    encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64
+    return encoded_img
 
 if __name__ == "__main__":
     Bootstrap(app)
