@@ -135,7 +135,7 @@ dmypy.json
 # Logs
 app.log
 *.log
-/log
+/logs
 
 # model
 /model
