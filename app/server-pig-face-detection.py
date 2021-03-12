@@ -6,7 +6,8 @@ from flask_apispec import use_kwargs, marshal_with
 from flask_apispec.extension import FlaskApiSpec
 import marshmallow as ma
 from flask import Flask
-
+from flask import current_app as app
+from flask import send_file
 from apispec.ext.marshmallow import MarshmallowPlugin
 
 import flask_apispec
@@ -122,7 +123,7 @@ def post_image():
 # route http posts to this method
 # @api.route('/api/test')
 @app.route('/api/postimage', methods=['POST'])
-def post_image():
+def post_image_v2():
     r = request
     # convert string of image data to uint8
     nparr = np.fromstring(r.data, np.uint8)
@@ -159,6 +160,12 @@ def post_json_image():
     response = {'message': 'image received. size={}x{}'.format(open_cv_image.shape[1], open_cv_image.shape[0])}
     response_pickled = jsonpickle.encode(response)
     return Response(response=response_pickled, status=200, mimetype="application/json")
+
+
+@app.route('/api/getimage')
+def get_image():
+    return send_file('../sample/DSC_V1_6460_2238.mask.png', attachment_filename='DSC_V1_6460_2238.mask.png', mimetype='image/png')
+
 
 
 @use_kwargs(ImageSchema)
