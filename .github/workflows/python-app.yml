@@ -48,5 +48,5 @@ jobs:
         flags: unittests
         env_vars: OS,PYTHON      
         path_to_write_report: ./coverage/codecov_report.txt
-        fail_ci_if_error: true
+        fail_ci_if_error: false
         
