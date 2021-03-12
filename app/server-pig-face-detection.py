@@ -96,6 +96,28 @@ def post_file(filename):
     # Return 201 CREATED
     return "", 201
 
+@app.route('/api/postimage', methods=['POST'])
+def post_image():
+    # read image file string data
+    filestr = request.files['file'].read()
+    # convert string data to numpy array
+    npimg = np.fromstring(filestr, np.uint8)
+    # convert numpy array to image
+    img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+
+    im_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    cv2.imwrite('messigray3.png',img)
+
+    # do some fancy processing here....
+    # pil_img = Pil_Image.fromarray(im_rgb)
+    # pil_img.save(os.path.join(app.config["IMAGE_UPLOADS"], "myUpload3.jpg"))
+    # build a response dict to send back to client
+    response = {'message': 'image received. size={}x{}'.format(img.shape[1], img.shape[0])}
+    # encode response using jsonpickle
+    response_pickled = jsonpickle.encode(response)
+
+    return Response(response=response_pickled, status=200, mimetype="application/json")
+
 
 # route http posts to this method
 # @api.route('/api/test')
