@@ -1,10 +1,6 @@
 
-
-|  |license| |versions| |status|
+|  |license| |versions| |status| |contributors|
 |  |docs| |codecov|
-|  |kit| |format| |repos| |downloads|
-
-
 
 |test-status| image:: https://github.com/hurschler/pig-face-recognition/actions/workflows/testsuite.yml/badge.svg?branch=master&event=push
     :target: https://github.com/hurschler/pig-face-recognition/actions/workflows/testsuite.yml
@@ -18,21 +14,6 @@
 .. |reqs| image:: https://requires.io/github/hurschler/pig-face-recognition/requirements.svg?branch=master
     :target: https://requires.io/github/hurschler/pig-face-recognition/requirements/?branch=master
     :alt: Requirements status
-.. |kit| image:: https://badge.fury.io/py/coverage.svg
-    :target: https://pypi.org/project/coverage/
-    :alt: PyPI status
-.. |format| image:: https://img.shields.io/pypi/format/coverage.svg
-    :target: https://pypi.org/project/coverage/
-    :alt: Kit format
-.. |downloads| image:: https://img.shields.io/pypi/dw/coverage.svg
-    :target: https://pypi.org/project/coverage/
-    :alt: Weekly PyPI downloads
-.. |versions| image:: https://img.shields.io/pypi/pyversions/coverage.svg?logo=python&logoColor=FBE072
-    :target: https://pypi.org/project/coverage/
-    :alt: Python versions supported
-.. |status| image:: https://img.shields.io/pypi/status/coverage.svg
-    :target: https://pypi.org/project/coverage/
-    :alt: Package stability
 .. |license| image:: https://img.shields.io/pypi/l/coverage.svg
     :target: https://pypi.org/project/coverage/
     :alt: License
