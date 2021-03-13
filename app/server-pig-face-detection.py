@@ -147,6 +147,7 @@ def post_image_v2():
 
 @use_kwargs(ImageSchema)
 @marshal_with(ImageSchema, code=201)
+@cross_origin() # allow all origins all methods.
 @app.route('/api/postjsonimage', methods=['POST'])
 def post_json_image():
     payload = request.form.to_dict(flat=False)
@@ -163,7 +164,10 @@ def post_json_image():
     print("Foto :", datetime.now())
     response = {'message': 'image received. size={}x{}'.format(open_cv_image.shape[1], open_cv_image.shape[0])}
     response_pickled = jsonpickle.encode(response)
-    return Response(response=response_pickled, status=200, mimetype="application/json")
+
+    response = Response(response=response_pickled, status=200, mimetype="application/json")
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 
 @app.route('/api/getimage')
@@ -172,6 +176,7 @@ def get_image():
 
 
 @app.route('/api/getimagejson')
+@cross_origin() # allow all origins all methods.
 def get_image_json():
     image_path = '../sample/DSC_V1_6460_2238.mask.png' # point to your image location
     encoded_img = get_response_image(image_path)
