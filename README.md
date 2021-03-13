@@ -7,3 +7,9 @@
 
 Run Tensorboard on this project
 tensorboard --logdir logs --bind_all
+
+http://localhost:8080/index.html
+
+http://localhost:8080/api/getimagejson
+
+http://localhost:8080/api/getimage

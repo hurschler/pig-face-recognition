@@ -216,4 +216,4 @@ if __name__ == "__main__":
     docs.register(post_json_image)
     docs.register(put)
     # app.run(host='147.88.62.72', port=8080)
-    app.run("127.0.0.1", port=8080)
+    app.run(host= '0.0.0.0', port=8080)
