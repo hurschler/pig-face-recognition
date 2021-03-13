@@ -178,7 +178,7 @@ def get_image():
 @app.route('/api/getimagejson')
 @cross_origin() # allow all origins all methods.
 def get_image_json():
-    image_path = '../sample/DSC_V1_6460_2238.mask.png' # point to your image location
+    image_path = '../sample/test1.png' # point to your image location
     encoded_img = get_response_image(image_path)
     numberOfPigs = 1
     imageId = 42

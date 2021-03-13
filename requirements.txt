@@ -30,3 +30,4 @@ flask-swagger-ui
 flask-apispec
 pyexiv2~=2.5.0
 exifread
+Flask-Cors
