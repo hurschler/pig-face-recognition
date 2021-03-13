@@ -11,7 +11,6 @@ from base64 import encodebytes
 from apispec.ext.marshmallow import MarshmallowPlugin
 from datetime import datetime
 from flask_cors import CORS, cross_origin
-
 import flask_apispec
 import os
 import cv2
@@ -19,16 +18,10 @@ import numpy as np
 import jsonpickle
 import base64
 import io
-
-
-
 from util import logger_init
 
 from flask_apispec import marshal_with, use_kwargs
 
-import detection
-import pixellib
-import recognition
 
 SWAGGER_URL = '/api/docs'
 API_URL = "/api/swagger.json"
@@ -147,7 +140,6 @@ def post_image_v2():
 
 @use_kwargs(ImageSchema)
 @marshal_with(ImageSchema, code=201)
-@cross_origin() # allow all origins all methods.
 @app.route('/api/postjsonimage', methods=['POST'])
 def post_json_image():
     payload = request.form.to_dict(flat=False)
@@ -166,7 +158,6 @@ def post_json_image():
     response_pickled = jsonpickle.encode(response)
 
     response = Response(response=response_pickled, status=200, mimetype="application/json")
-    response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
 
@@ -176,14 +167,17 @@ def get_image():
 
 
 @app.route('/api/getimagejson')
-@cross_origin() # allow all origins all methods.
 def get_image_json():
     image_path = '../sample/test1.png' # point to your image location
     encoded_img = get_response_image(image_path)
     numberOfPigs = 1
     imageId = 42
-    response =  { 'status' : 'Success', 'numberOfPigs': numberOfPigs , 'imageId': imageId, 'imageBytes': encoded_img}
-    return jsonify(response) # send the result to client
+
+    response_json =  { 'status' : 'Success', 'numberOfPigs': numberOfPigs , 'imageId': imageId, 'imageBytes': encoded_img}
+    response_pickled = jsonpickle.encode(response_json)
+    response = Response(response=response_pickled, status=200, mimetype="application/json")
+    # response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 
 @app.route('/api/recognizepig')
