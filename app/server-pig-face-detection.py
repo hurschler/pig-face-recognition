@@ -9,6 +9,8 @@ from flask import current_app as app
 from flask import send_file
 from base64 import encodebytes
 from apispec.ext.marshmallow import MarshmallowPlugin
+from datetime import datetime
+from flask_cors import CORS, cross_origin
 
 import flask_apispec
 import os
@@ -32,6 +34,7 @@ SWAGGER_URL = '/api/docs'
 API_URL = "/api/swagger.json"
 
 app = Flask(__name__)
+cors = CORS(app)
 
 IMAGE_UPLOADS = "./upload"
 app.config["IMAGE_UPLOADS"] = IMAGE_UPLOADS
@@ -157,7 +160,7 @@ def post_json_image():
     open_cv_image = np.array(pil_img)
     # Convert RGB to BGR
     open_cv_image = open_cv_image[:, :, ::-1].copy()
-
+    print("Foto :", datetime.now())
     response = {'message': 'image received. size={}x{}'.format(open_cv_image.shape[1], open_cv_image.shape[0])}
     response_pickled = jsonpickle.encode(response)
     return Response(response=response_pickled, status=200, mimetype="application/json")
@@ -217,3 +220,4 @@ if __name__ == "__main__":
     docs.register(put)
     # app.run(host='147.88.62.72', port=8080)
     app.run(host= '0.0.0.0', port=8080)
+
