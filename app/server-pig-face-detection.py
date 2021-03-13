@@ -149,10 +149,11 @@ def post_json_image():
     payload = request.form.to_dict(flat=False)
     im_b64 = payload['image'][0]  # remember that now each key corresponds to list.
     im_id = payload['id'][0]
+    im_type = payload['type'][0]
     im_binary = base64.b64decode(im_b64)
     buf = io.BytesIO(im_binary)
     pil_img = Pil_Image.open(buf)
-    pil_img.save(os.path.join(app.config["IMAGE_UPLOADS"], im_id))
+    pil_img.save(os.path.join(app.config["IMAGE_UPLOADS"], im_id + '.' + im_type))
     open_cv_image = np.array(pil_img)
     # Convert RGB to BGR
     open_cv_image = open_cv_image[:, :, ::-1].copy()
@@ -173,7 +174,7 @@ def get_image_json():
     encoded_img = get_response_image(image_path)
     numberOfPigs = 1
     imageId = 42
-    response =  { 'Status' : 'Success', 'numberOfPigs': numberOfPigs , 'imageId': imageId, 'ImageBytes': encoded_img}
+    response =  { 'status' : 'Success', 'numberOfPigs': numberOfPigs , 'imageId': imageId, 'imageBytes': encoded_img}
     return jsonify(response) # send the result to client
 
 
