@@ -149,7 +149,7 @@ def post_json_image():
     im_binary = base64.b64decode(im_b64)
     buf = io.BytesIO(im_binary)
     pil_img = Pil_Image.open(buf)
-    pil_img.save(os.path.join(app.config["IMAGE_UPLOADS"], im_id + '.' + im_type))
+    pil_img.convert('RGB').save(os.path.join(app.config["IMAGE_UPLOADS"], im_id + '.' + im_type))
     open_cv_image = np.array(pil_img)
     # Convert RGB to BGR
     open_cv_image = open_cv_image[:, :, ::-1].copy()
