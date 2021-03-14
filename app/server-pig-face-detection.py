@@ -4,13 +4,14 @@ from apispec import APISpec
 from flask_bootstrap import Bootstrap
 from flask_apispec.extension import FlaskApiSpec
 import marshmallow as ma
-from flask import Flask
+from flask import Flask, g, session
 from flask import current_app as app
 from flask import send_file
 from base64 import encodebytes
 from apispec.ext.marshmallow import MarshmallowPlugin
 from datetime import datetime
 from flask_cors import CORS, cross_origin
+
 import flask_apispec
 import os
 import cv2
@@ -18,10 +19,17 @@ import numpy as np
 import jsonpickle
 import base64
 import io
+
+
+# from detection.detection import segment_image
+from pixellib.custom_train import instance_custom_training
+from pixellib.instance import custom_segmentation
 from util import logger_init
 
 from flask_apispec import marshal_with, use_kwargs
 
+os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
+os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
 SWAGGER_URL = '/api/docs'
 API_URL = "/api/swagger.json"
@@ -32,11 +40,6 @@ cors = CORS(app)
 IMAGE_UPLOADS = "./upload"
 app.config["IMAGE_UPLOADS"] = IMAGE_UPLOADS
 
-
-class ImageSchema(ma.Schema):
-    id = ma.fields.Int()
-    type = ma.fields.String()
-    image = ma.fields.String()
 
 
 @app.route("/api/swagger.json")
@@ -138,8 +141,8 @@ def post_image_v2():
     return Response(response=response_pickled, status=200, mimetype="application/json")
 
 
-@use_kwargs(ImageSchema)
-@marshal_with(ImageSchema, code=201)
+# @use_kwargs(ImageSchema)
+# @marshal_with(ImageSchema, code=201)
 @app.route('/api/postjsonimage', methods=['POST'])
 def post_json_image():
     payload = request.form.to_dict(flat=False)
@@ -150,13 +153,9 @@ def post_json_image():
     buf = io.BytesIO(im_binary)
     pil_img = Pil_Image.open(buf)
     pil_img.save(os.path.join(app.config["IMAGE_UPLOADS"], im_id + '.' + im_type))
-    open_cv_image = np.array(pil_img)
-    # Convert RGB to BGR
-    open_cv_image = open_cv_image[:, :, ::-1].copy()
-    print("Foto :", datetime.now())
-    response = {'message': 'image received. size={}x{}'.format(open_cv_image.shape[1], open_cv_image.shape[0])}
+    print("postjsonimage Foto :", datetime.now())
+    response = {'message': 'image received'}
     response_pickled = jsonpickle.encode(response)
-
     response = Response(response=response_pickled, status=200, mimetype="application/json")
     return response
 
@@ -168,11 +167,20 @@ def get_image():
 
 @app.route('/api/getimagejson')
 def get_image_json():
-    image_path = '../sample/test1.png' # point to your image location
+    print ("load ML-Model")
+    train_maskrcnn = instance_custom_training()
+    train_maskrcnn.modelConfig(network_backbone = "resnet101", num_classes=1, batch_size=5)
+    train_maskrcnn.load_pretrained_model("../model/mask_rcnn_coco.h5")
+    segment_image = custom_segmentation()
+    segment_image.inferConfig(num_classes=1, class_names=["PigFace"], detection_threshold=0.95)
+    segment_image.load_model("../model/mask_rcnn_model.006-0.181393.h5")
+
+    print("start segemntation")
+    segment_image.segmentImage("1.png", "../app/upload/1.png" , show_bboxes=True, output_image_name="../output/1.jpg", verbose=True)
+    image_path = '../output/1.jpg' # point to your image location
     encoded_img = get_response_image(image_path)
     numberOfPigs = 1
     imageId = 42
-
     response_json =  { 'status' : 'Success', 'numberOfPigs': numberOfPigs , 'imageId': imageId, 'imageBytes': encoded_img}
     response_pickled = jsonpickle.encode(response_json)
     response = Response(response=response_pickled, status=200, mimetype="application/json")
@@ -187,8 +195,8 @@ def recognize_pig():
 
 
 
-@use_kwargs(ImageSchema)
-@marshal_with(ImageSchema)
+# @use_kwargs(ImageSchema)
+# @marshal_with(ImageSchema)
 @app.route('/api/sendpet', methods=['POST'])
 def put(**kwargs):
     print('pet erhalten')
@@ -197,14 +205,26 @@ def put(**kwargs):
 
 def get_response_image(image_path):
     pil_img = Pil_Image.open(image_path, mode='r') # reads the PIL image
+
+    basewidth = 300
+    wpercent = (basewidth/float(pil_img.size[0]))
+    hsize = int((float(pil_img.size[1])*float(wpercent)))
+    img = pil_img.resize((basewidth,hsize), Pil_Image.ANTIALIAS)
+
     byte_arr = io.BytesIO()
     pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
     encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64
     return encoded_img
 
+def get_response_image_from_pil(pil_img):
+    byte_arr = io.BytesIO()
+    pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
+    encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64
+    return encoded_img
+
+
 if __name__ == "__main__":
     Bootstrap(app)
-
     app.config.update({
         'APISPEC_SPEC': APISpec(
             title='pig_face_detection',
@@ -217,6 +237,5 @@ if __name__ == "__main__":
     docs = FlaskApiSpec(app)
     docs.register(post_json_image)
     docs.register(put)
-    # app.run(host='147.88.62.72', port=8080)
     app.run(host= '0.0.0.0', port=8080)
 

@@ -14,7 +14,8 @@ import imantics
 from imantics import Polygons, Mask
 import numpy as np
 from PIL import Image
-import config as project_config
+# import detection.config as project_config
+import util.detection_config as project_config
 import util.detection_util as detection_util
 
 
@@ -926,17 +927,17 @@ def display_box_instances(image_file_name, image, boxes, masks, class_ids, class
         im_pil = im_pil.crop((x1, y1, x2, y2))
         im_pil_mask = im_pil_mask.crop((x1, y1, x2, y2))
 
-        detectionUtil = detection_util.DetectionUtil()
-        pig_name = detectionUtil.getPigName(image_file_name)
-        output_path_rectangle = project_config.output_path_cropped_rectangle
-        pig_dir = output_path_rectangle + r"/" + pig_name
+        # detectionUtil = detection_util.DetectionUtil()
+        # pig_name = detectionUtil.getPigName(image_file_name)
+        # output_path_rectangle = project_config.output_path_cropped_rectangle
+        # pig_dir = output_path_rectangle + r"/" + pig_name
 
-        if not os.path.exists(pig_dir):
-            os.makedirs(pig_dir)
+        # if not os.path.exists(pig_dir):
+        #     os.makedirs(pig_dir)
 
-        output_file_name = os.path.join(output_path_rectangle, pig_name, image_file_name)
-        output_file_name = output_file_name + '-crop-mask' + str(i) + '.jpg'
-        im_pil.save(output_file_name)
+        # output_file_name = os.path.join(output_path_rectangle, pig_name, image_file_name)
+        # output_file_name = output_file_name + '-crop-mask' + str(i) + '.jpg'
+        # im_pil.save(output_file_name)
 
         open_cv_image = np.array(im_pil_mask)
         # Convert RGB to BGR
@@ -944,15 +945,15 @@ def display_box_instances(image_file_name, image, boxes, masks, class_ids, class
         # cv2.imshow("Crop-Img", open_cv_image)
         # cv2.waitKey(0)
 
-        output_path = project_config.output_path_cropped
-        pig_dir = output_path + r"/" + pig_name
-        if not os.path.exists(pig_dir):
-            os.makedirs(pig_dir)
+        #output_path = project_config.output_path_cropped
+        # pig_dir = output_path + r"/" + pig_name
+        #if not os.path.exists(pig_dir):
+        #    os.makedirs(pig_dir)
 
-        output_file_name = os.path.join(output_path, pig_name, image_file_name)
-        output_file_name = output_file_name + '-crop-mask' + str(i) + '.jpg'
+        #output_file_name = os.path.join(output_path, pig_name, image_file_name)
+        #output_file_name = output_file_name + '-crop-mask' + str(i) + '.jpg'
 
-        cv2.imwrite(output_file_name, open_cv_image)
+        #cv2.imwrite(output_file_name, open_cv_image)
 
         image = apply_mask(image, mask, color)
         color_rec = [int(c) for c in np.array(colors[i]) * 255]

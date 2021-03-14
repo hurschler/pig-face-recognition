@@ -139,3 +139,7 @@ app.log
 
 # model
 /model
+
+# output
+/output
+/output/*.jpg
