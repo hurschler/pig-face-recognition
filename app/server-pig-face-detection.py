@@ -152,7 +152,10 @@ def post_json_image():
     im_binary = base64.b64decode(im_b64)
     buf = io.BytesIO(im_binary)
     pil_img = Pil_Image.open(buf)
-    pil_img.save(os.path.join(app.config["IMAGE_UPLOADS"], im_id + '.' + im_type))
+    if im_type == 'jpg' or im_type == 'jpeg':
+        pil_img.convert('RGB').save(os.path.join(app.config["IMAGE_UPLOADS"], im_id + '.' + im_type))
+    else:
+        pil_img.save(os.path.join(app.config["IMAGE_UPLOADS"], im_id + '.' + im_type))
     print("postjsonimage Foto :", datetime.now())
     response = {'message': 'image received'}
     response_pickled = jsonpickle.encode(response)
