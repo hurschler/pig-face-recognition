@@ -19,13 +19,9 @@ import numpy as np
 import jsonpickle
 import base64
 import io
+import time
 
-
-# from detection.detection import segment_image
-from pixellib.custom_train import instance_custom_training
-from pixellib.instance import custom_segmentation
 from util import logger_init
-
 from flask_apispec import marshal_with, use_kwargs
 
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
@@ -152,14 +148,22 @@ def post_json_image():
     im_binary = base64.b64decode(im_b64)
     buf = io.BytesIO(im_binary)
     pil_img = Pil_Image.open(buf)
+    img_file_name = im_id + '.' + im_type
+    img_upload_path = os.path.join(app.config["IMAGE_UPLOADS"], img_file_name)
     if im_type == 'jpg' or im_type == 'jpeg':
-        pil_img.convert('RGB').save(os.path.join(app.config["IMAGE_UPLOADS"], im_id + '.' + im_type))
+        pil_img.convert('RGB').save(img_upload_path)
     else:
-        pil_img.save(os.path.join(app.config["IMAGE_UPLOADS"], im_id + '.' + im_type))
+        pil_img.save(img_upload_path)
+
     print("postjsonimage Foto :", datetime.now())
     response = {'message': 'image received'}
     response_pickled = jsonpickle.encode(response)
     response = Response(response=response_pickled, status=200, mimetype="application/json")
+    try:
+        os.remove( '../output/' + img_file_name)
+    except:
+        print("error on file read file: " + img_file_name)
+
     return response
 
 
@@ -179,14 +183,26 @@ def get_image_json():
     segment_image.load_model("../model/mask_rcnn_model.006-0.181393.h5")
 
     print("start segemntation")
-    segment_image.segmentImage("1.png", "../app/upload/1.png" , show_bboxes=True, output_image_name="../output/1.jpg", verbose=True)
+    # segment_image.segmentImage("1.png", "../app/upload/1.png" , show_bboxes=True, output_image_name="../output/1.jpg", verbose=True)
     image_path = '../output/1.jpg' # point to your image location
-    encoded_img = get_response_image(image_path)
+    while True:
+        if os.path.isfile(image_path):
+            print ("File exist:", image_path)
+            try:
+                encoded_img = get_response_image(image_path)
+                break
+            except IOError:
+                print ("IOError: " + image_path)
+        else:
+            print ("File not exist")
+            time.sleep(0.5) # Delay for 1 minute (60 seconds).
+
     numberOfPigs = 1
     imageId = 42
     response_json =  { 'status' : 'Success', 'numberOfPigs': numberOfPigs , 'imageId': imageId, 'imageBytes': encoded_img}
     response_pickled = jsonpickle.encode(response_json)
     response = Response(response=response_pickled, status=200, mimetype="application/json")
+    os.remove(image_path)
     # response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 

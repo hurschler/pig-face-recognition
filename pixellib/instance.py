@@ -919,7 +919,7 @@ def display_box_instances(image_file_name, image, boxes, masks, class_ids, class
         output = cv2.rectangle(output, (x1, y1), (x2, y2), color_rec, 2)
 
         output = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
-        cv2.imwrite('output' + str(i) + '.jpg', output)
+        cv2.imwrite('"../output/output' + str(i) + '.jpg', output)
 
         im_pil_mask = Image.fromarray(output)
         im_pil = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
