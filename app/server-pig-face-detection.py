@@ -143,20 +143,20 @@ def post_image_v2():
 def post_json_image():
     payload = request.form.to_dict(flat=False)
     im_b64 = payload['image'][0]  # remember that now each key corresponds to list.
-    im_id = payload['id'][0]
-    im_type = payload['type'][0]
+    imageId = payload['imageId'][0]
+    imageType = payload['imageType'][0]
     im_binary = base64.b64decode(im_b64)
     buf = io.BytesIO(im_binary)
     pil_img = Pil_Image.open(buf)
-    img_file_name = im_id + '.' + im_type
+    img_file_name = imageId + '.' + imageType
     img_upload_path = os.path.join(app.config["IMAGE_UPLOADS"], img_file_name)
-    if im_type == 'jpg' or im_type == 'jpeg':
+    if imageType == 'jpg' or imageType == 'jpeg':
         pil_img.convert('RGB').save(img_upload_path)
     else:
         pil_img.save(img_upload_path)
 
     print("postjsonimage Foto :", datetime.now())
-    response = {'message': 'image received'}
+    response = {'message': 'image received', 'imageId': imageId}
     response_pickled = jsonpickle.encode(response)
     response = Response(response=response_pickled, status=200, mimetype="application/json")
     try:
@@ -174,8 +174,10 @@ def get_image():
 
 @app.route('/api/getimagejson')
 def get_image_json():
-    print("start segemntation")
-    image_path = '../output/1.jpg' # point to your image location
+    imageId = request.args.get('imageId')
+    imageType = request.args.get('imageType')
+    print("start segemntation ", imageId)
+    image_path = '../output/' + imageId +'.' + imageType  # point to your image location
     while True:
         if os.path.isfile(image_path):
             print ("File exist:", image_path)
