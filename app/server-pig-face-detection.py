@@ -174,16 +174,7 @@ def get_image():
 
 @app.route('/api/getimagejson')
 def get_image_json():
-    print ("load ML-Model")
-    train_maskrcnn = instance_custom_training()
-    train_maskrcnn.modelConfig(network_backbone = "resnet101", num_classes=1, batch_size=5)
-    train_maskrcnn.load_pretrained_model("../model/mask_rcnn_coco.h5")
-    segment_image = custom_segmentation()
-    segment_image.inferConfig(num_classes=1, class_names=["PigFace"], detection_threshold=0.95)
-    segment_image.load_model("../model/mask_rcnn_model.006-0.181393.h5")
-
     print("start segemntation")
-    # segment_image.segmentImage("1.png", "../app/upload/1.png" , show_bboxes=True, output_image_name="../output/1.jpg", verbose=True)
     image_path = '../output/1.jpg' # point to your image location
     while True:
         if os.path.isfile(image_path):
