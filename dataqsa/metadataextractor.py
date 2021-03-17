@@ -1,22 +1,37 @@
 import sys
 import exifread
+import logging.config
+import util.logger_init
 
 
-f = open('../sample/DSC_V1_6460_2238.JPG', 'rb')
-tags = exifread.process_file(f)
+class MetadataExtractor:
 
-#Show all Keys
-for tmp in tags.keys():
-    print(tmp, tags[tmp])
+    def __init__(self, file_name_with_path):
+        self.log = logging.getLogger(__name__)
+        # open('../sample/DSC_V1_6460_2238.JPG', 'rb')
+        file = open(file_name_with_path, 'rb')
+        self.tags = exifread.process_file(file)
 
+    def showAllKey(self):
+        for tmp in self.tags.keys():
+            self.log.info(str(tmp) + " = " + str(self.tags[tmp]))
 
-meta_aufnahme_datum =  tags['EXIF DateTimeOriginal'].values
-meta_aufnahme_width = tags['EXIF ExifImageWidth'].values
-meta_aufnahme_height  = tags['EXIF ExifImageLength'].values
-meta_aufnahme_iso = tags['EXIF ISOSpeedRatings'].values
+    def getCreateDate(self):
+        meta_aufnahme_datum = self.tags['EXIF DateTimeOriginal'].values
+        return meta_aufnahme_datum
 
-print(meta_aufnahme_datum)
-print(meta_aufnahme_width)
-print(meta_aufnahme_height)
-print(meta_aufnahme_iso)
+    def getImageWidth(self):
+        meta_aufnahme_width = self.tags['EXIF ExifImageWidth'].values
+        m1 = str(meta_aufnahme_width).split('[')[1]
+        m1 = m1.split(']')[0]
+        return m1
 
+    def getImageHeight(self):
+        meta_aufnahme_height = self.tags['EXIF ExifImageLength'].values
+        m1 = str(meta_aufnahme_height).split('[')[1]
+        m1 = m1.split(']')[0]
+        return m1
+
+    def getIso(self):
+        meta_aufnahme_iso = self.tags['EXIF ISOSpeedRatings'].values
+        return meta_aufnahme_iso

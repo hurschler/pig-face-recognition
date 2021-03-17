@@ -107,6 +107,10 @@ class Preprocessing(object):
             s = cv2.Laplacian(image, cv2.CV_64F).var()
             log.info ("Sharpness: " + key + " " + str(s))
 
+    # Sharpness / Blur detection
+    def computeSharpness(self, cv2_image):
+        sharpness = cv2.Laplacian(cv2_image, cv2.CV_64F).var()
+        return sharpness;
 
     def show(self, img_dic, gray=True):
             log.info("show")
