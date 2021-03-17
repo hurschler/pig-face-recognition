@@ -21,7 +21,7 @@ train_maskrcnn.load_pretrained_model("../model/mask_rcnn_model.036-0.139239.h5")
 # train_maskrcnn.evaluate_model("model/mask_rcnn_model.003-0.700727.h5")
 # print("finish training")
 
-print("start segemntation")
+print("load ML Model")
 segment_image = custom_segmentation()
 segment_image.inferConfig(num_classes=1, class_names=["PigFace"], detection_threshold=0.95)
 # segment_image.load_model("model/model.h5")
@@ -41,6 +41,7 @@ while True:
         print ("Image Filename: ", image_file_name)
         start_time = datetime.now()
         segment_image.segmentImage(image_file_name, dir_path + r"/" + image_file_name, show_bboxes=True, output_image_name=output_path + r"/" + image_file_name)
+        os.remove(os.path.join(dir_path, imageFullFileName))
         end_time = datetime.now()
         diff = (end_time-start_time).microseconds / 1000
         print("Elapsedtime for Segmentation: ", "%.2gs" % diff)
