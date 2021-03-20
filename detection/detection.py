@@ -40,7 +40,10 @@ while True:
         image_file_name = os.path.basename(imageFullFileName)
         print ("Image Filename: ", image_file_name)
         start_time = datetime.now()
-        segment_image.segmentImage(image_file_name, dir_path + r"/" + image_file_name, show_bboxes=True, output_image_name=output_path + r"/" + image_file_name)
+        try:
+            segment_image.segmentImage(image_file_name, dir_path + r"/" + image_file_name, show_bboxes=True, output_image_name=output_path + r"/" + image_file_name)
+        except:
+            print("error on Image:" + image_file_name)
         os.remove(os.path.join(dir_path, imageFullFileName))
         end_time = datetime.now()
         diff = (end_time-start_time).microseconds / 1000
