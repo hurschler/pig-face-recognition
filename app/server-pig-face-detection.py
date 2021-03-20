@@ -118,7 +118,7 @@ def get_response_image(image_path):
     img = pil_img.resize((basewidth,hsize), Pil_Image.ANTIALIAS)
 
     byte_arr = io.BytesIO()
-    pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
+    pil_img.save(byte_arr, format='JPEG', optimize='true', quality=90) # convert the PIL image to byte array
     encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64
     return encoded_img
 
