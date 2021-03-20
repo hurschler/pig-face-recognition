@@ -2,8 +2,11 @@ import os
 import cv2
 import util.config as config
 import glob
+import numpy as np
 import logging
 import logging.config
+from PIL import Image as Pil_Image
+from PIL import ImageStat
 import util.logger_init
 
 from matplotlib import pyplot as plt
@@ -44,7 +47,7 @@ class Preprocessing(object):
             log.debug(imageFullFileName)
             image = cv2.imread(imageFullFileName)
             image_file_name = os.path.basename(imageFullFileName)
-            log.info(image_file_name)
+            log.debug(image_file_name)
             img_dic[image_file_name] = image
             i = i + 1
 
@@ -66,6 +69,39 @@ class Preprocessing(object):
                     img_dic[image_on_sub_dir] = image
 
         return img_dic
+
+
+    # Automatic brightness and contrast optimization with optional histogram clipping
+    def automatic_brightness_and_contrast(self, image, clip_hist_percent=1):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Calculate grayscale histogram
+        hist = cv2.calcHist([gray],[0],None,[256],[0,256])
+        hist_size = len(hist)
+        # Calculate cumulative distribution from the histogram
+        accumulator = []
+        accumulator.append(float(hist[0]))
+        for index in range(1, hist_size):
+            accumulator.append(accumulator[index -1] + float(hist[index]))
+
+        # Locate points to clip
+        maximum = accumulator[-1]
+        clip_hist_percent *= (maximum/100.0)
+        clip_hist_percent /= 2.0
+        # Locate left cut
+        minimum_gray = 0
+        while accumulator[minimum_gray] < clip_hist_percent:
+            minimum_gray += 1
+
+        # Locate right cut
+        maximum_gray = hist_size -1
+        while accumulator[maximum_gray] >= (maximum - clip_hist_percent):
+            maximum_gray -= 1
+
+        # Calculate alpha and beta values
+        alpha = 255 / (maximum_gray - minimum_gray)
+        beta = -minimum_gray * alpha
+        auto_result = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
+        return auto_result
 
 
     def toGrey(self, img_dic):
@@ -100,6 +136,7 @@ class Preprocessing(object):
         return img_dic
 
     # Sharpness / Blur detection
+    # Zweite Ableitung, stärkste Krümmung
     def computeSharpness(self, img_dic):
         log.info("preprocessing compute sharpness")
         for key in img_dic:
@@ -111,6 +148,25 @@ class Preprocessing(object):
     def computeSharpness(self, cv2_image):
         sharpness = cv2.Laplacian(cv2_image, cv2.CV_64F).var()
         return sharpness;
+
+
+    def getBrightness(self, cv2_image):
+        img = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2RGB)
+        im_pil = Pil_Image.fromarray(img)
+        # Only get the Luminance value (-> to Gray)
+        im_pil = im_pil.convert('L')
+        stat = ImageStat.Stat(im_pil)
+        return stat.mean[0]
+
+    def getContrast(self, cv2_image):
+        Y = cv2.cvtColor(cv2_image, cv2.COLOR_BGR2YUV)[:,:,0]
+        # compute min and max of Y
+        min = np.min(Y)
+        max = np.max(Y)
+        # compute contrast
+        contrast = (max-min)/(max+min)
+        return contrast
+
 
     def show(self, img_dic, gray=True):
             log.info("show")

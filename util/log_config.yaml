@@ -18,11 +18,11 @@ handlers:
 
 loggers:
   sampleLogger:
-    level: DEBUG
+    level: INFO
     handlers: [console]
     propagate: no
 
 root:
-  level: DEBUG
+  level: INFO
   handlers: [console]
   propogate: yes

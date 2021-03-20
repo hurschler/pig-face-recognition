@@ -16,7 +16,7 @@ data = img_to_array(img)
 samples = expand_dims(data, 0)
 # create image data augmentation generator
 
-# good
+# Augmentation Transformer
 # datagen = ImageDataGenerator(width_shift_range=[-500, 1000])
 # datagen = ImageDataGenerator(brightness_range=[0.1,0.9]),
 # datagen = ImageDataGenerator(rotation_range=45)

@@ -10,7 +10,7 @@ output_path_cropped_rectangle = r"D:\Users\avatar\OneDrive - Hochschule Luzern\b
 
 image_example_name = r"DSC_V1_6460_2238.JPG"
 
-max_image_number = 10
+max_image_number = 30
 
 image_upload_dir_path = r"D:\Users\avatar\PycharmProjects\pig-face-recognition\app\upload"
 

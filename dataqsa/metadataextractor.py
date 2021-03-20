@@ -35,3 +35,15 @@ class MetadataExtractor:
     def getIso(self):
         meta_aufnahme_iso = self.tags['EXIF ISOSpeedRatings'].values
         return meta_aufnahme_iso
+
+    def getFlashMode(self):
+        meta_aufnahme_flash_mode = self.tags['MakerNote FlashMode'].values
+        return meta_aufnahme_flash_mode
+
+    # Brennweite
+    def getFocalLength(self):
+        meta_focal_length = self.tags['EXIF FocalLength'].values
+        return meta_focal_length
+
+
+
