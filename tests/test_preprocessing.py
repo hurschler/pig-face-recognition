@@ -1,3 +1,4 @@
+import os
 import tensorflow
 import util.config as config
 from unittest import TestCase
@@ -10,6 +11,8 @@ class TestPreprocessing(TestCase):
         self.preprocessing = Preprocessing()
 
     def test_compute_sharpness(self):
+        print ('Image full path: ', os.path.join(config.image_sample_path, config.image_example_name))
         img = self.preprocessing.readImage(config.image_sample_path, config.image_example_name)
+        self.assertIsNotNone(img,'Image is None')
         self.assertEqual(31.764733264481336, self.preprocessing.computeSharpness(img))
 
