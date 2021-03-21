@@ -20,8 +20,15 @@ class Preprocessing(object):
         self.log = logging.getLogger(__name__)
         self.log.info("init Preprocessing")
 
-    def readImage(self, image_name=config.image_example_name):
-        log.info("readImage")
+    def readImage(self, img_path, img_name):
+        img_name_full = os.path.join(img_path, img_name)
+        log.info("readImage: " + img_name_full)
+        image = cv2.imread(img_name_full)
+        return image
+
+
+    def readImageToGray(self, image_name=config.image_example_name):
+        log.info("readImage: " + image_name)
         dir_path = config.image_train_dir_path
         full_path = os.path.join(dir_path, image_name)
         image = cv2.imread(full_path)
