@@ -70,14 +70,15 @@ class VggFaceModel:
                            outputs=self.sequential_model.layers[-2].output)
 
     def load_weights(self):
-        self.sequential_model.load_weights('model/vgg_face_weights.h5')
+        self.sequential_model.load_weights('../model/vgg_face_weights.h5')
 
     def vgg_face(self, img):
         return self.model(img)
 
     def debug_model(self, img_name):
 
-        crop_img = load_img(os.getcwd() + '/' + img_name, target_size=(224, 224))
+        # crop_img = load_img(os.getcwd() + '/' + img_name, target_size=(224, 224))
+        crop_img = load_img(img_name, target_size=(224, 224))
         crop_img = img_to_array(crop_img)
         crop_img = np.expand_dims(crop_img, axis=0)
         crop_img = preprocess_input(crop_img)
@@ -110,13 +111,14 @@ class VggFaceModel:
                 pyplot.imshow(feature_maps[0, :, :, ix - 1], cmap='gray')
                 ix += 1
         # show the figure
-        pyplot.savefig(os.getcwd() + '/output/debug.jpg')
+        pyplot.savefig('../output/debug.jpg')
         pyplot.show()
         # --------------   Debugging CNN ------------------------------
 
     def get_embeddings(self, crop_img_name):
         # Get Embeddings
-        crop_img = load_img(os.getcwd() + '/' + crop_img_name, target_size=(224, 224))
+        # crop_img = load_img(os.getcwd() + '/' + crop_img_name, target_size=(224, 224))
+        crop_img = load_img(crop_img_name, target_size=(224, 224))
         crop_img = img_to_array(crop_img)
         crop_img = np.expand_dims(crop_img, axis=0)
         crop_img = preprocess_input(crop_img)
