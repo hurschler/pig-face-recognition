@@ -143,3 +143,7 @@ app.log
 # output
 /output
 /output/*.jpg
+
+# configs
+/detection/config.py
+/util/detection_config.py
