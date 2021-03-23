@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 import datetime
+import keras
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Dropout, Softmax, Flatten, Activation, BatchNormalization
 from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
@@ -19,13 +20,22 @@ class ClassificationModel:
     # Softmax regressor to classify images based on encoding
     def define_classification_model(self, x_train):
         classifier_model=Sequential()
-        classifier_model.add(Dense(units=1224, input_dim=x_train.shape[1],kernel_initializer='glorot_uniform'))
+        classifier_model.add(Dense(units=1024, input_dim=x_train.shape[1],kernel_initializer='glorot_uniform'))
         classifier_model.add(Activation('relu'))
         classifier_model.add(Dropout(0.2))
         classifier_model.add(Dense(units=10,kernel_initializer='he_uniform'))
         classifier_model.add(Activation('softmax'))
-        classifier_model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(),optimizer='nadam',metrics=['accuracy'])
 
+        optimizer = keras.optimizers.Nadam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
+        # Bei Fehler tf.keras.metrics.AUC() anschauen oder löschen
+        # BatchSize zurück setzen auf 1, Epochen 400 / 100
+        metrics=['accuracy', 'mse', 'mae', 'mape', 'acc', 'categorical_accuracy', 'top_k_categorical_accuracy', tf.keras.metrics.AUC()]
+        loss = loss=tf.keras.losses.SparseCategoricalCrossentropy()
+
+        # Best Result 22.03.2021-23:11
+        #classifier_model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(),optimizer='nadam',metrics=['accuracy'])
+
+        classifier_model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
         return classifier_model
 
     def fit(self, ml_data):
@@ -42,11 +52,11 @@ class ClassificationModel:
 
         callb = [
             ModelCheckpoint(self.checkpoint_path,save_weights_only=True,save_best_only = True, monitor = "val_loss", verbose = 1),
-            tf.keras.callbacks.TensorBoard(log_dir=logdir, histogram_freq=0, write_graph=True, write_images=True, update_freq='epoch', profile_batch=2, embeddings_freq=0, embeddings_metadata=None),
+            tf.keras.callbacks.TensorBoard(log_dir=logdir, histogram_freq=1, write_graph=True, write_images=True, update_freq='epoch', profile_batch=2, embeddings_freq=1, embeddings_metadata=None),
         ]
 
         self.summary_print()
-        self.model.fit(x_train, y_train,batch_size = 1, epochs=100,callbacks=callb, validation_data=(x_test, y_test))
+        self.model.fit(x_train, y_train,batch_size = 3, epochs=400,callbacks=callb, validation_data=(x_test, y_test))
         # self.model.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test))
         self.summary_print()
 

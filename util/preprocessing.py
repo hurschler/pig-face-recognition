@@ -26,20 +26,31 @@ class Preprocessing(object):
         image = cv2.imread(img_name_full)
         return image
 
+    def replaceColor(self, img_opencv, r, g, b):
+        lower_black = np.array([r,g,b], dtype = "uint16")
+        upper_black = np.array([r,g,b], dtype = "uint16")
+        black_mask = cv2.inRange(img_opencv, lower_black, upper_black)
+        img_opencv[np.where((img_opencv == [b,g,r]).all(axis = 2))] = [0,0,0]
+        return img_opencv
+
+    def replaceColorBlueWithBlack(self, img_opencv):
+        img = self.replaceColor(img_opencv, 0, 0, 194)
+        img = self.replaceColor(img_opencv, 5, 6, 150)
+        return img
 
     def readImageToGray(self, image_name=config.image_example_name):
-        log.info("readImage: " + image_name)
-        dir_path = config.image_train_dir_path
-        full_path = os.path.join(dir_path, image_name)
-        image = cv2.imread(full_path)
+            log.info("readImage: " + image_name)
+            dir_path = config.image_train_dir_path
+            full_path = os.path.join(dir_path, image_name)
+            image = cv2.imread(full_path)
 
-        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image_gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image_gray = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2GRAY)
 
-        plt.imshow(image_gray, cmap='gray', interpolation='bicubic')
-        plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
-        plt.show()
-        cv2.waitKey(0)
+            plt.imshow(image_gray, cmap='gray', interpolation='bicubic')
+            plt.xticks([]), plt.yticks([])  # to hide tick values on X and Y axis
+            plt.show()
+            cv2.waitKey(0)
 
     def readImages(self):
         log.info("readImages")

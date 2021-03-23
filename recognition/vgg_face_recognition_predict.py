@@ -38,7 +38,10 @@ classification_model.load_model()
 # ok (94%)
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6472\DSC_V1_6472_2270.JPG-crop-mask0.jpg"
 
-img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6498\DSC_V1_6498_2475.JPG-crop-mask0.jpg"
+# ok (87%)
+# img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6501\DSC_V1_6501_2403.JPG-crop-mask0.jpg"
+
+img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6460\DSC_V1_6460_2247.JPG-crop-mask0.jpg"
 
 img = rec_util.predict2(vgg_face_model, classification_model, ml_data, img_name_full_path)
 # Visualize debug informations

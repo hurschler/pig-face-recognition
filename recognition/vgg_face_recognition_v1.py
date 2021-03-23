@@ -4,6 +4,7 @@ import classification_model
 import vgg_face_recognition_utils_v1 as rec_util
 import ml_data
 from util.preprocessing import Preprocessing
+from recognition.data_augmentation import Augmentation
 import logging.config
 import util.logger_init
 
@@ -28,6 +29,9 @@ pre = Preprocessing()
 
 # Image Preprocessing
 
+# Image Augmentation
+aug = Augmentation()
+aug.generate_augmentation_images()
 # Create a new VGG Face model
 vgg_face_model = vgg_face_model.VggFaceModel()
 # Load Weights for the VGG Model
