@@ -18,6 +18,6 @@ http://localhost:8080/api/getimage
 ## General Git Information
 `.gitignore` ignores just files that weren't tracked before.
 Run `git reset name_of_file` to unstage the file and keep it.
-In case you want to also remove the given file from the repository (after pushing), use git `rm --cached name_of_file`
+In case you want to also remove the given file from the repository (after pushing), use `git rm --cached name_of_file`
 
 
