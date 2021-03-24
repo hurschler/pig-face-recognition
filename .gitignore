@@ -147,3 +147,4 @@ app.log
 # configs
 /detection/config.py
 /util/detection_config.py
+/util/config.py
