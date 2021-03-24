@@ -12,9 +12,9 @@ class TestPreprocessing(TestCase):
     def setUp(self):
         self.ml_data = MlData([],[],[],[], {})
 
-    def test_serialze_ml_data(self):
-        ml_data = self.ml_data
-        ml_data = vgg_face_utils.load_ml_data_from_json_file(ml_data, '../recognition/data.json')
-        print(ml_data)
-        self.assertIsNotNone(ml_data,'ML_Data is None')
+    # def test_serialze_ml_data(self):
+    #    ml_data = self.ml_data
+    #    ml_data = vgg_face_utils.load_ml_data_from_json_file(ml_data, '../recognition/data.json')
+    #    print(ml_data)
+    #    self.assertIsNotNone(ml_data,'ML_Data is None')
 
