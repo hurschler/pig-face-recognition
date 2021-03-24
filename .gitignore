@@ -145,5 +145,5 @@ app.log
 /output/*.jpg
 
 # local.properties
-local.properties
+.local.properties
 
