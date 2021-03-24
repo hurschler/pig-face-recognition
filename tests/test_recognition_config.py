@@ -5,6 +5,7 @@ from util.detection_util import DetectionUtil
 import logging.config
 import util.logger_init
 
+
 class TestPreprocessing(TestCase):
 
     def setUp(self):
@@ -32,9 +33,3 @@ class TestPreprocessing(TestCase):
         build_server_path = config.build_server_path
         self.log.info('Received path: ' + str(build_server_path))
         self.assertIsNotNone(build_server_path)
-
-
-    def test_read_local_and_build_properties(self):
-        keras_max_augmentation = config.keras_max_augmentation
-        self.log.info('Value of config.keras_max_augmentation: ' + str(keras_max_augmentation))
-        self.assertIs(3, keras_max_augmentation)
