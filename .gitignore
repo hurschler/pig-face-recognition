@@ -144,3 +144,6 @@ app.log
 /output
 /output/*.jpg
 
+# local.properties
+local.properties
+
