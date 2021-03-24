@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import tensorflow as tf
+import keras
 import datetime
 from keras.regularizers import l2
 from tensorflow.keras.models import Sequential, Model
@@ -31,7 +32,7 @@ class ClassificationModel:
         classifier_model.add(Activation('softmax'))
 
         # optimizer = keras.optimizers.Nadam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
-        # optimizer= keras.optimizers.SGD(learning_rate=0.001)
+        optimizer= keras.optimizers.SGD(learning_rate=0.001)
 
         metrics = ['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
         loss = tf.keras.losses.SparseCategoricalCrossentropy()
@@ -39,7 +40,7 @@ class ClassificationModel:
         # Best Result 22.03.2021-23:11
         # classifier_model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(),optimizer='nadam',metrics=['accuracy'])
 
-        classifier_model.compile(loss=loss, optimizer='SGD', metrics=metrics)
+        classifier_model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
         return classifier_model
 
     def fit(self, ml_data):
