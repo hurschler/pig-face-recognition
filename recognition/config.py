@@ -2,7 +2,7 @@ import os
 import configparser
 
 local_property_file = '../local.properties'
-build_property_file = '../build.properties'
+build_property_file = '/home/runner/work/pig-face-recognition/pig-face-recognition/build.properties'
 
 # a simple function to read an array of configuration files into a config object
 def read_config(cfg_files):
