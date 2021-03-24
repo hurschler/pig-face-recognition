@@ -1,5 +1,7 @@
 import os
 
+# Detection Config
+
 image_root_dir_path = r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label"
 
 image_train_dir_path = os.path.join(image_root_dir_path, "train")
