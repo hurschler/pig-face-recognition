@@ -50,7 +50,7 @@ def load_ml_data_from_json_file(ml_data, file_full_name):
     return ml_data
 
 
-def calculate_feature_vectors(vgg_face_model, ml_data):
+def calculate_feature_vectors_train(vgg_face_model, ml_data):
     img_path_crop = detection_config.output_path_cropped_rectangle
     pig_img_folders = os.listdir(img_path_crop)
     for i, pig_name in enumerate(pig_img_folders):
@@ -66,10 +66,27 @@ def calculate_feature_vectors(vgg_face_model, ml_data):
             ml_data.x_train.append(feature_vector)
             ml_data.y_train.append(i)
             # rec_util.test_data(vgg_face_model, ml_data, i, pig_name)
-            print ('pig-number: ', i, ' pig_name: ', pig_name, 'image_name:  ', image_name, 'length of Feature-Vector: ', len(feature_vector), ' Feature-Vector: ', feature_vector)
-            # Test Values
+            print ('TRAIN-Vector pig-number: ', i, ' pig_name: ', pig_name, 'image_name:  ', image_name, 'length of Feature-Vector: ', len(feature_vector), ' Feature-Vector: ', feature_vector)
+
+def calculate_feature_vectors_test(vgg_face_model, ml_data):
+    img_path_crop = detection_config.output_path_cropped_rectangle_test
+    pig_img_folders = os.listdir(img_path_crop)
+    for i, pig_name in enumerate(pig_img_folders):
+        ml_data.pig_dict[i] = pig_name
+        image_names = os.listdir(os.path.join(img_path_crop, pig_name))
+        for image_name in image_names:
+            img = load_img(os.path.join(img_path_crop, pig_name, image_name), target_size=(224, 224))
+            img = img_to_array(img)
+            img = np.expand_dims(img, axis=0)
+            img = preprocess_input(img)
+            img_encode = vgg_face_model.vgg_face(img)
+            feature_vector = np.squeeze(K.eval(img_encode)).tolist()
             ml_data.x_test.append(feature_vector)
             ml_data.y_test.append(i)
+            # rec_util.test_data(vgg_face_model, ml_data, i, pig_name)
+            print ('TEST-Vector: pig-number: ', i, ' pig_name: ', pig_name, 'image_name:  ', image_name, 'length of Feature-Vector: ', len(feature_vector), ' Feature-Vector: ', feature_vector)
+
+
 
 
 def test_data(vgg_face_model, ml_data, i, pig_name):

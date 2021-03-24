@@ -27,21 +27,27 @@ ml_data = rec_util.load_ml_data_from_json_file(ml_data, '../output/data.json')
 # Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)
 # Train the Classification model with the embedding Datas
-# classification_model.fit(ml_data)
+classification_model.fit(ml_data)
 # Export the Model
-# classification_model.save_model()
+classification_model.save_model()
 # Load the Model from a file
 classification_model.load_model()
 # Predict
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021\6460\DSC_V1_6460_2247.JPG-crop-mask0.jpg"
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021\6460\DSC_V1_6460_2238.JPG-crop-mask0.jpg"
+
 # ok (94%)
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6472\DSC_V1_6472_2270.JPG-crop-mask0.jpg"
 
 # ok (87%)
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6501\DSC_V1_6501_2403.JPG-crop-mask0.jpg"
 
-img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6460\DSC_V1_6460_2247.JPG-crop-mask0.jpg"
+# ok (77%)
+# img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6460\DSC_V1_6460_2247.JPG-crop-mask0.jpg"
+
+img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6476\DSC_V1_6476_2334.JPG-crop-mask0.jpg"
+# img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6476\DSC_V1_6476_2335.JPG-crop-mask0.jpg"
+
 
 img = rec_util.predict2(vgg_face_model, classification_model, ml_data, img_name_full_path)
 # Visualize debug informations

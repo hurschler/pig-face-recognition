@@ -5,9 +5,13 @@ import numpy as np
 import tensorflow as tf
 import datetime
 import keras
+from keras.regularizers import l1
+from keras.regularizers import l2
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Dropout, Softmax, Flatten, Activation, BatchNormalization
 from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
+from tensorflow.python.keras.callbacks_v1 import TensorBoard
+from tensorflow.python.keras.layers import LeakyReLU
 
 
 class ClassificationModel:
@@ -22,14 +26,16 @@ class ClassificationModel:
         classifier_model=Sequential()
         classifier_model.add(Dense(units=1024, input_dim=x_train.shape[1],kernel_initializer='glorot_uniform'))
         classifier_model.add(Activation('relu'))
-        classifier_model.add(Dropout(0.2))
+        classifier_model.add(Dropout(0.5))
+        classifier_model.add(Dense(units=1024,kernel_initializer='he_uniform', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+        classifier_model.add(Activation('relu'))
+        classifier_model.add(Dropout(0.1))
         classifier_model.add(Dense(units=10,kernel_initializer='he_uniform'))
         classifier_model.add(Activation('softmax'))
 
-        optimizer = keras.optimizers.Nadam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
-        # Bei Fehler tf.keras.metrics.AUC() anschauen oder löschen
-        # BatchSize zurück setzen auf 1, Epochen 400 / 100
-        metrics=['accuracy', 'mse', 'mae', 'mape', 'acc', 'categorical_accuracy', 'top_k_categorical_accuracy', tf.keras.metrics.AUC()]
+        # optimizer = keras.optimizers.Nadam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
+        optimizer=keras.optimizers.SGD(learning_rate=0.001)
+        metrics=['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
         loss = loss=tf.keras.losses.SparseCategoricalCrossentropy()
 
         # Best Result 22.03.2021-23:11
@@ -47,18 +53,17 @@ class ClassificationModel:
         logdir = "../logs/recognition/logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         tf.debugging.experimental.enable_dump_debug_info(logdir, tensor_debug_mode="FULL_HEALTH", circular_buffer_size=-1)
 
-        # self.checkpoint_path = os.path.join('model', 'test_checkpoint.h5')
         self.checkpoint_path = '../model/face_model'
 
         callb = [
+            XTensorBoard(logdir, histogram_freq=0, write_graph=True, write_images=True, update_freq='epoch', profile_batch=2, embeddings_freq=0, embeddings_metadata=None),
             ModelCheckpoint(self.checkpoint_path,save_weights_only=True,save_best_only = True, monitor = "val_loss", verbose = 1),
-            tf.keras.callbacks.TensorBoard(log_dir=logdir, histogram_freq=1, write_graph=True, write_images=True, update_freq='epoch', profile_batch=2, embeddings_freq=1, embeddings_metadata=None),
+            # tf.keras.callbacks.TensorBoard(log_dir=logdir, histogram_freq=0, write_graph=True, write_images=True, update_freq='epoch', profile_batch=2, embeddings_freq=0, embeddings_metadata=None),
         ]
 
         self.summary_print()
-        self.model.fit(x_train, y_train,batch_size = 3, epochs=400,callbacks=callb, validation_data=(x_test, y_test))
-        # self.model.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test))
-        self.summary_print()
+        # https://www.mt-ag.com/blog/ki-werkstatt/einstieg-in-neuronale-netze-mit-keras/ (batch_size in 2er Potenzen
+        self.model.fit(x_train, y_train,batch_size = 2, epochs=700, callbacks=callb, validation_data=(x_test, y_test))
 
 
     def predict(self, embed, rect, pig_dict, img):
@@ -89,8 +94,6 @@ class ClassificationModel:
         width = right - left
         height = bottom - top
 
-        # img_crop = img[top:top + height, left:left + width]
-        # cv2.imwrite(os.getcwd() + '/output/crop_img.jpg', img_crop)
         img_opencv = np.array(img)
         pig = self.model.predict(embed)
         label_nr = np.argmax(pig)
@@ -110,6 +113,11 @@ class ClassificationModel:
         return name
 
 
+    def learning_rate_scheduler(self, epoch, lr):
+        if epoch < 10:
+            return lr
+        else:
+            return lr * tf.math.exp(-0.1)
 
     def getModel(self):
         return self.model
@@ -123,6 +131,20 @@ class ClassificationModel:
 
     def load_model(self):
         # Load saved model
-        # self.model = tf.keras.models.load_model('../model/face_classifier_model.h5')
         self.model = tf.keras.models.load_model('../model/face_classifier_model.h5')
 
+
+class XTensorBoard(TensorBoard):
+
+    def on_epoch_begin(self, epoch, logs=None):
+        # get values
+        lr = float(self.model.optimizer.lr)
+        decay = float(self.model.optimizer.decay)
+        # computer lr
+        lr = lr * (1. / (1 + decay * epoch))
+        self.model.optimizer.lr = lr
+
+    def on_epoch_end(self, epoch, logs=None):
+        logs = logs or {}
+        logs['lr'] = self.model.optimizer.lr
+        super().on_epoch_end(epoch, logs)

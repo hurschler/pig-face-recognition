@@ -18,7 +18,6 @@ os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
 # read Images for preprocessing
 # pre.readImage()
-pre = Preprocessing()
 # img_dic = pre.readImages()
 # img_dic = pre.readImagesWithSubDir()
 # img_dic = pre.toGrey(img_dic)
@@ -27,35 +26,36 @@ pre = Preprocessing()
 # img_dic = pre.toEqualizeHist(img_dic)
 
 
-# Image Preprocessing
+# 1. Image Preprocessing
+pre = Preprocessing()
 
-# Image Augmentation
+
+# 2. Image Augmentation
 aug = Augmentation()
-aug.generate_augmentation_images()
-# Create a new VGG Face model
+# aug.generate_augmentation_images()
+# aug.generate_sharp_img()
+# 3. Create a new VGG Face model
 vgg_face_model = vgg_face_model.VggFaceModel()
-# Load Weights for the VGG Model
+# 4. Load Weights for the VGG Model
 vgg_face_model.load_weights()
-# Remove Last Softmax layer and get model up to last flatten layer with outputs 2622 units (transfer learning)
+# 5. Remove Last Softmax layer and get model up to last flatten layer with outputs 2622 units (transfer learning)
 vgg_face_model.remove_last_layer()
-# Prepare Data Structures
+# 6. Prepare Data Structures
 ml_data = ml_data.MlData([],[],[],[], {})
-# Read Images from Disk and calculate the feature vector
-rec_util.calculate_feature_vectors(vgg_face_model, ml_data)
-# convert all feature vectors to JSON File
+# 7. Read Images from Disk and calculate the feature vector
+rec_util.calculate_feature_vectors_train(vgg_face_model, ml_data)
+rec_util.calculate_feature_vectors_test(vgg_face_model, ml_data)
+# 8. convert all feature vectors to JSON File
 rec_util.convert_to_json_and_save(ml_data)
-# Create a new Classification Model
+# 9. Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)
-# Train the Classification model with the embedding Datas
+# 10. Train the Classification model with the embedding Datas
 classification_model.fit(ml_data)
-# Export the Model
+# 11. Export the Model
 classification_model.save_model()
-# Predict
-# img = rec_util.predict2(vgg_face_model, classification_model, ml_data, "../image_input/DSC_V1_6462_2320.JPG")
+# 12. Predict
 # img = rec_util.predict2(vgg_face_model, classification_model, ml_data, r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\train\DSC_V1_6460_2238.JPG")
 img = rec_util.predict2(vgg_face_model, classification_model, ml_data, r"G:\temp\pig-face-22-03-2021\6460\DSC_V1_6460_2238.JPG-crop-mask0.jpg")
-
-# img = rec_util.predict(vgg_face_model, classification_model, ml_data, "putin-patrick.jpg")
 # Visualize debug informations
 vgg_face_model.debug_model(r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\train\DSC_V1_6460_2238.JPG")
 # Visualize the result
