@@ -27,9 +27,9 @@ ml_data = rec_util.load_ml_data_from_json_file(ml_data, '../output/data.json')
 # Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)
 # Train the Classification model with the embedding Datas
-classification_model.fit(ml_data)
+# classification_model.fit(ml_data)
 # Export the Model
-classification_model.save_model()
+# classification_model.save_model()
 # Load the Model from a file
 classification_model.load_model()
 # Predict
