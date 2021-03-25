@@ -21,3 +21,5 @@ Run `git reset name_of_file` to unstage the file and keep it.
 In case you want to also remove the given file from the repository (after pushing), use `git rm --cached name_of_file`
 
 
+##Remove .DS_Store hidden in Finder
+`find . -name '*.DS_Store' -type f -delete`
