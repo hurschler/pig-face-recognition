@@ -31,33 +31,43 @@ pre = Preprocessing()
 
 
 # 2. Image Augmentation
-aug = Augmentation()
+# aug = Augmentation()
 # aug.generate_augmentation_images()
 # aug.generate_sharp_img()
+
 # 3. Create a new VGG Face model
 vgg_face_model = vgg_face_model.VggFaceModel()
+
 # 4. Load Weights for the VGG Model
 vgg_face_model.load_weights()
+
 # 5. Remove Last Softmax layer and get model up to last flatten layer with outputs 2622 units (transfer learning)
 vgg_face_model.remove_last_layer()
+
 # 6. Prepare Data Structures
 ml_data = ml_data.MlData([],[],[],[], {})
+
 # 7. Read Images from Disk and calculate the feature vector
 rec_util.calculate_feature_vectors_train(vgg_face_model, ml_data)
 rec_util.calculate_feature_vectors_test(vgg_face_model, ml_data)
+
 # 8. convert all feature vectors to JSON File
 rec_util.convert_to_json_and_save(ml_data)
+
 # 9. Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)
+
 # 10. Train the Classification model with the embedding Datas
 classification_model.fit(ml_data)
+
 # 11. Export the Model
 classification_model.save_model()
+
 # 12. Predict
 # img = rec_util.predict2(vgg_face_model, classification_model, ml_data, r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\train\DSC_V1_6460_2238.JPG")
-img = rec_util.predict2(vgg_face_model, classification_model, ml_data, r"G:\temp\pig-face-22-03-2021\6460\DSC_V1_6460_2238.JPG-crop-mask0.jpg")
+img = rec_util.predict2(vgg_face_model, classification_model, ml_data, r"/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-recognition/data/validate/6357/DSC_V2_6357_2762.JPG-crop-mask0.jpg")
 # Visualize debug informations
-vgg_face_model.debug_model(r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\train\DSC_V1_6460_2238.JPG")
+# vgg_face_model.debug_model(r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\train\DSC_V1_6460_2238.JPG")
 # Visualize the result
-rec_util.plot(img)
+# rec_util.plot(img)
 
