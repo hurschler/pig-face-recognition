@@ -3,7 +3,6 @@ import os
 import glob
 from pixellib.custom_train import instance_custom_training
 from pixellib.instance import custom_segmentation
-# import detection.config as project_config
 import util.detection_config as project_config
 from datetime import datetime
 import time
@@ -34,7 +33,7 @@ output_path = project_config.output_dir_path
 while True:
     print("read upload directory: ", datetime.now())
     i = 0
-    files = [x for x in os.listdir(dir_path) if x.endswith('.jpg')]
+    files = [x for x in os.listdir(dir_path) if (x.endswith('.jpg') or x.endswith('.JPG') or x.endswith('.png') or x.endswith('.PNG'))]
 
     for imageFullFileName in files:
         image_file_name = os.path.basename(imageFullFileName)
