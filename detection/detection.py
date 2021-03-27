@@ -47,5 +47,5 @@ while True:
         end_time = datetime.now()
         diff = (end_time-start_time).microseconds / 1000
         print("Elapsedtime for Segmentation: ", "%.2gs" % diff)
-    time.sleep(0.2) # Delay for 1 minute (60 seconds).
+    time.sleep(0.2)
 

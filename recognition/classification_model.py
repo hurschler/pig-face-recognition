@@ -3,36 +3,57 @@ import numpy as np
 import tensorflow as tf
 import keras
 import datetime
+import autokeras as ak
 from keras.regularizers import l2
+from tensorflow.keras.models import load_model
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Dropout, Softmax, Flatten, Activation, BatchNormalization
 from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from tensorflow.python.keras.callbacks_v1 import TensorBoard
 from keras import backend as K
 from tensorflow.python.keras.layers import LeakyReLU
+import logging.config
+import util.logger_init
+
+from recognition.ml_data import LRTensorBoard
+from recognition.ml_model import MlModel
 
 
-class ClassificationModel:
+class ClassificationModel(MlModel):
 
     def __init__(self, ml_data):
-        print("init Classification Model")
+        self.log = logging.getLogger(__name__)
+        self.log.info("init Classification Model: " + __name__)
         x_train = np.array(ml_data.x_train)
         self.model = self.define_classification_model(x_train)
 
+
     # Softmax regressor to classify images based on encoding
     def define_classification_model(self, x_train):
+        # input_ = keras.layers.Input(shape=x_train.shape[1])
+        # hidden1 = keras.layers.Dense(30, activation='relu')(input_)
+        # hidden1 = keras.layers.BatchNormalization()(hidden1)
+        # hidden1 = Dropout(0.2)(hidden1)
+        # hidden2 = keras.layers.Dense(30, activation='relu')(hidden1)
+        # hidden2 = keras.layers.BatchNormalization()(hidden2)
+        # hidden2 = Dropout(0.2)(hidden2)
+        # concat = keras.layers.Concatenate()([input_, hidden2])
+        # output = keras.layers.Dense(units=10, activation='softmax')(concat)
+        # classifier_model = keras.Model(inputs=[input_], outputs=[output])
+
         classifier_model = Sequential()
         classifier_model.add(Dense(units=1024, input_dim=x_train.shape[1], kernel_initializer='glorot_uniform'))
         classifier_model.add(Activation('relu'))
-        classifier_model.add(Dropout(0.5))
-        classifier_model.add(Dense(units=1024, kernel_initializer='he_uniform', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+        classifier_model.add(Dropout(0.2))
+        classifier_model.add(
+            Dense(units=1024, kernel_initializer='he_uniform', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
         classifier_model.add(Activation('relu'))
-        classifier_model.add(Dropout(0.1))
+        classifier_model.add(Dropout(0.2))
         classifier_model.add(Dense(units=10, kernel_initializer='he_uniform'))
         classifier_model.add(Activation('softmax'))
 
         # optimizer = keras.optimizers.Nadam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
-        optimizer= keras.optimizers.SGD(learning_rate=0.001)
+        optimizer = keras.optimizers.SGD(learning_rate=0.001)
 
         metrics = ['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
         loss = tf.keras.losses.SparseCategoricalCrossentropy()
@@ -42,6 +63,7 @@ class ClassificationModel:
 
         classifier_model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
         return classifier_model
+
 
     def fit(self, ml_data):
         x_train = np.array(ml_data.x_train)
@@ -55,7 +77,7 @@ class ClassificationModel:
 
         self.checkpoint_path = '../model/face_model'
 
-        lr_scheduler = LearningRateScheduler(scheduler)
+        lr_scheduler = LearningRateScheduler(self.scheduler)
 
         callb = [
             lr_scheduler,
@@ -66,8 +88,8 @@ class ClassificationModel:
         ]
 
         self.summary_print()
-        # https://www.mt-ag.com/blog/ki-werkstatt/einstieg-in-neuronale-netze-mit-keras/ (batch_size in 2er Potenzen
-        self.model.fit(x_train, y_train, batch_size=2, epochs=200, callbacks=callb, validation_data=(x_test, y_test))
+        # https://www.mt-ag.com/blog/ki-werkstatt/einstieg-in-neuronale-netze-mit-keras/ (batch_size in 2er Potenzen)
+        self.model.fit(x_train, y_train, batch_size=2, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
 
     def predict2(self, embed, left, top, right, bottom, pig_dict, img):
         width = right - left
@@ -106,18 +128,6 @@ class ClassificationModel:
         # Load saved model
         self.model = tf.keras.models.load_model('../model/face_classifier_model.h5')
 
-
-# Define TensorBoard callback child class
-class LRTensorBoard(TensorBoard):
-    def __init__(self, log_dir, **kwargs):  # add other arguments to __init__ if you need
-        super().__init__(log_dir=log_dir, **kwargs)
-
-    def on_epoch_end(self, epoch, logs=None):
-        logs = logs or {}
-        logs.update({'lr': K.eval(self.model.optimizer.lr)})
-        super().on_epoch_end(epoch, logs)
-
-
-# Define your scheduling function
-def scheduler(epoch):
-    return 0.001 * 0.95 ** epoch
+    # Define your scheduling function
+    def scheduler(self, epoch):
+        return 0.001 * 0.95 ** epoch

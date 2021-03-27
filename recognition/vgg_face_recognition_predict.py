@@ -1,6 +1,7 @@
 import os
 import vgg_face_model
 import classification_model
+import classification_auto_keras_model
 import vgg_face_recognition_utils_v1 as rec_util
 import ml_data
 from util.preprocessing import Preprocessing
@@ -25,9 +26,11 @@ vgg_face_model.remove_last_layer()
 ml_data = ml_data.MlData([],[],[],[], {})
 ml_data = rec_util.load_ml_data_from_json_file(ml_data, '../output/data.json')
 # Create a new Classification Model
-classification_model = classification_model.ClassificationModel(ml_data)
+# classification_model = classification_model.ClassificationModel(ml_data)
+classification_model = classification_auto_keras_model.ClassificationAutoKerasModel(ml_data)
 # Train the Classification model with the embedding Datas
 classification_model.fit(ml_data)
+# classification_model.fit_autokeras(ml_data)
 # Export the Model
 classification_model.save_model()
 # Load the Model from a file
@@ -36,17 +39,22 @@ classification_model.load_model()
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021\6460\DSC_V1_6460_2247.JPG-crop-mask0.jpg"
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021\6460\DSC_V1_6460_2238.JPG-crop-mask0.jpg"
 
-# ok (94%)
-# img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6472\DSC_V1_6472_2270.JPG-crop-mask0.jpg"
+# ok (94%) a+
+#img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6472\DSC_V1_6472_2270.JPG-crop-mask0.jpg"
 
-# ok (87%)
+# ok (87%) a+
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6501\DSC_V1_6501_2403.JPG-crop-mask0.jpg"
 
-# ok (77%)
+# ok (77%) a-
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6460\DSC_V1_6460_2247.JPG-crop-mask0.jpg"
 
-img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6476\DSC_V1_6476_2334.JPG-crop-mask0.jpg"
-# img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6476\DSC_V1_6476_2335.JPG-crop-mask0.jpg"
+# Not ok (92%) a-
+# img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6476\DSC_V1_6476_2334.JPG-crop-mask0.jpg"
+# ok (64%) a+
+#img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6476\DSC_V1_6476_2335.JPG-crop-mask0.jpg"
+
+# Not ok (97%) a-
+img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6495\DSC_V1_6495_2078.JPG-crop-mask0.jpg"
 
 
 img = rec_util.predict2(vgg_face_model, classification_model, ml_data, img_name_full_path)

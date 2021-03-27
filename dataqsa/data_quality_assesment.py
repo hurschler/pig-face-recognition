@@ -116,9 +116,10 @@ for key in img_dic:
 
     img_after = pre.automatic_brightness_and_contrast(img)
 
-    # res = findArc(img, 10)
-    # res = findContourWithColor(img)
-
+    res = findArc(img, 10)
+    res = findContourWithColor(img)
+    frame = findContourWithColor(img)
+    showOpenCvImage(frame, frame, pig_name)
 
     plt.rcParams["figure.figsize"] = (8, 6)
     plt.subplot(121)
@@ -133,10 +134,10 @@ for key in img_dic:
     plt.subplot(122)
     plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     plt.title(key + ' Y-Max: ' + str(y.max()))
-    # plt.show()
+    plt.show()
     y_max_hist = y.max()
 
-    # showOpenCvImage(img, np.asarray(img_after), key)
+    showOpenCvImage(img, np.asarray(img_after), key)
 
     df.loc[str(i), :] = [i, key, 'jpg', size, pig_name, set_version, create_date, img_width, img_height, shrp, flash,
                          bright, contrast, sex, weight, age, y_max_hist]
@@ -153,4 +154,5 @@ df['sharpness'].hist(bins=100)
 plt.xlabel("id", fontsize=15)
 plt.ylabel("sharpness", fontsize=15)
 plt.xscale('log')
-# plt.show()
+plt.show()
+print('Angelika')
