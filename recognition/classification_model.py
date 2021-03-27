@@ -15,7 +15,7 @@ from tensorflow.python.keras.layers import LeakyReLU
 import logging.config
 import util.logger_init
 
-from recognition.ml_data import LRTensorBoard
+from recognition.ml_model import LRTensorBoard
 from recognition.ml_model import MlModel
 
 
