@@ -3,7 +3,6 @@ import numpy as np
 import tensorflow as tf
 import keras
 import datetime
-import autokeras as ak
 from keras.regularizers import l2
 from tensorflow.keras.models import load_model
 from tensorflow.keras.models import Sequential, Model
