@@ -54,7 +54,7 @@ def load_validate_dataset():
 
 
 
-def calculate_feature_vectors_train(vgg_face_model, ml_data):
+def calculate_feature_vectors_train(efficientnet_face_model, ml_data):
     img_path_crop = detection_config.output_path_cropped_rectangle
     pig_img_folders = os.listdir(img_path_crop)
     for i, pig_name in enumerate(pig_img_folders):
@@ -65,13 +65,13 @@ def calculate_feature_vectors_train(vgg_face_model, ml_data):
             img = img_to_array(img)
             img = np.expand_dims(img, axis=0)
             img = preprocess_input(img)
-            img_encode = vgg_face_model.vgg_face(img)
+            img_encode = efficientnet_face_model.efficientnet_face(img)
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()
-            ml_data.x_train.append(img)
+            ml_data.x_test.append(feature_vector)
             ml_data.y_train.append(i)
             print ('TRAIN pig-number: ', i, ' pig_name: ', pig_name, 'image_name:  ', image_name, 'length of Feature-Vector: ', len(feature_vector), ' Feature-Vector: ', feature_vector)
 
-def calculate_feature_vectors_test(vgg_face_model, ml_data):
+def calculate_feature_vectors_test(efficientnet_face_model, ml_data):
     img_path_crop = detection_config.output_path_cropped_rectangle_test
     pig_img_folders = os.listdir(img_path_crop)
     for i, pig_name in enumerate(pig_img_folders):
@@ -82,7 +82,7 @@ def calculate_feature_vectors_test(vgg_face_model, ml_data):
             img = img_to_array(img)
             img = np.expand_dims(img, axis=0)
             img = preprocess_input(img)
-            img_encode = vgg_face_model.vgg_face(img)
+            img_encode = efficientnet_face_model.efficientnet_face(img)
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()
             ml_data.x_test.append(feature_vector)
             ml_data.y_test.append(i)
@@ -114,7 +114,7 @@ def plot(img):
 
 
 
-def predict2(vgg_face_model, classification_model, ml_data, img_name):
+def predict2(efficientnet_face_model, classification_model, ml_data, img_name):
     img_pil = load_img(img_name, target_size=(224, 224))
     width = 224
     height = 224
@@ -123,7 +123,7 @@ def predict2(vgg_face_model, classification_model, ml_data, img_name):
         print("Please check image path or some error occured")
     else:
         persons_in_img = []
-        img_encode = vgg_face_model.get_embeddings(img_name)
+        img_encode = efficientnet_face_model.get_embeddings(img_name)
         # Make Predictions
 
         print ('pig_name: ', img_name, 'length of Feature-Vector: ', len(img_encode), ' Feature-Vector: ', img_encode)

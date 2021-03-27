@@ -8,7 +8,16 @@ from tensorflow.python.keras.callbacks_v1 import TensorBoard
 from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from tensorflow.keras import layers
 from tensorflow.python.ops.init_ops_v2 import glorot_uniform
-
+from tensorflow.keras.layers import ZeroPadding2D, Convolution2D, MaxPooling2D
+from tensorflow.keras.layers import Dense, Dropout, Softmax, Flatten, Activation, BatchNormalization
+import os
+import numpy as np
+from matplotlib import pyplot
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.applications.imagenet_utils import preprocess_input
+import logging.config
+import util.logger_init
 import util.logger_init
 
 
@@ -31,15 +40,12 @@ class EfficientNetModel:
 
         x = model.output
         x = layers.GlobalAveragePooling2D(name="avg_pool")(x)
-        x = layers.BatchNormalization()(x)
-        x = layers.Dropout(0.2, name="top_dropout")(x)
-        x = layers.Dense(1280, activation='relu',  kernel_initializer='glorot_uniform', bias_initializer='zeros')(x)
-        # x = layers.BatchNormalization()(x)
+        # x = tf.keras.layers.Dense(1,activation='sigmoid')(x)
 
         # outputs = layers.Dense(1, activation="softmax", name="pred")(x)
-        outputs = layers.Dense(10, activation="softmax", name="pred")(x)
+        # outputs = layers.Dense(10, activation="softmax", name="pred")(x)
 
-        model = tf.keras.Model(inputs, outputs, name="EfficientNet")
+        model = tf.keras.Model(inputs, outputs=x, name="EfficientNet")
         # optimizer = tf.keras.optimizers.Adam(learning_rate=1e-2)
         optimizer = tf.keras.optimizers.SGD(learning_rate=0.01)
         metrics = ['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
@@ -86,3 +92,15 @@ class EfficientNetModel:
 
     def getModel(self):
         return self.model
+
+
+    def get_embeddings(self, crop_img_name):
+        # Get Embeddings
+        crop_img = load_img(crop_img_name, target_size=(224, 224))
+        crop_img = img_to_array(crop_img)
+        crop_img = np.expand_dims(crop_img, axis=0)
+        crop_img = preprocess_input(crop_img)
+        return self.model(crop_img)
+
+    def efficientnet_face(self, img):
+        return self.model(img)
