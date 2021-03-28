@@ -8,6 +8,7 @@ from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.applications.imagenet_utils import preprocess_input
 import logging.config
+from keras_vggface.vggface import VGGFace
 import util.logger_init
 
 
@@ -17,9 +18,23 @@ class VggFaceModel:
     def __init__(self):
         self.log = logging.getLogger(__name__)
         self.log.info("init VggFaceModel")
-        self.sequential_model = self.define_model()
+        self.sequential_model = self.define_model_vggface16_backend()
+        # self.sequential_model = self.define_model_resnet_backend()
+        # self.sequential_model = self.define_model_senet_backend()
 
-    def define_model(self):
+
+        self.model = self.sequential_model
+
+
+    def define_model_resnet_backend(self):
+        return VGGFace(model='resnet50', include_top=False, input_shape=(224, 224, 3), pooling='avg')
+
+
+    def define_model_senet_backend(self):
+        return VGGFace(model='senet50', include_top=False, input_shape=(224, 224, 3), pooling='avg')
+
+
+    def define_model_vggface16_backend(self):
         # Define VGG_FACE_MODEL architecture
         # https://medium.com/analytics-vidhya/face-recognition-with-vgg-face-in-keras-96e6bc1951d5
         model = Sequential()
@@ -123,3 +138,4 @@ class VggFaceModel:
         crop_img = np.expand_dims(crop_img, axis=0)
         crop_img = preprocess_input(crop_img)
         return self.model(crop_img)
+

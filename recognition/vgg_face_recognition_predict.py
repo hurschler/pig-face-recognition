@@ -19,7 +19,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 # Create a new VGG Face model
 vgg_face_model = vgg_face_model.VggFaceModel()
 # Load Weights for the VGG Model
-vgg_face_model.load_weights()
+# vgg_face_model.load_weights()
 # Remove Last Softmax layer and get model up to last flatten layer with outputs 2622 units (transfer learning)
 vgg_face_model.remove_last_layer()
 # Prepare Data Structures
@@ -30,7 +30,6 @@ ml_data = rec_util.load_ml_data_from_json_file(ml_data, '../output/data.json')
 classification_model = classification_auto_keras_model.ClassificationAutoKerasModel(ml_data)
 # Train the Classification model with the embedding Datas
 classification_model.fit(ml_data)
-# classification_model.fit_autokeras(ml_data)
 # Export the Model
 classification_model.save_model()
 # Load the Model from a file
@@ -51,10 +50,13 @@ classification_model.load_model()
 # Not ok (92%) a-
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6476\DSC_V1_6476_2334.JPG-crop-mask0.jpg"
 # ok (64%) a+
-#img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6476\DSC_V1_6476_2335.JPG-crop-mask0.jpg"
+# img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6476\DSC_V1_6476_2335.JPG-crop-mask0.jpg"
 
 # Not ok (97%) a-
-img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6495\DSC_V1_6495_2078.JPG-crop-mask0.jpg"
+# img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6495\DSC_V1_6495_2078.JPG-crop-mask0.jpg"
+
+# img_name_full_path = r"G:\temp\pig-face-rectangle-test\6460\DSC_V1_6460_2239.JPG-crop-mask0.jpg"
+img_name_full_path = r"G:\temp\pig-face-rectangle-test\6385\DSC_V2_6385_2622.JPG-crop-mask0.jpg"
 
 
 img = rec_util.predict2(vgg_face_model, classification_model, ml_data, img_name_full_path)

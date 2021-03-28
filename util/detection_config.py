@@ -33,9 +33,12 @@ output_path_cropped = r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_
 
 # output_path_cropped_rectangle = r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\cropped-rectangle-subdir-08-03-2021"
 
-output_path_cropped_rectangle = r"G:\temp\pig-face-22-03-2021"
+# output_path_cropped_rectangle = r"G:\temp\pig-face-22-03-2021"
+# output_path_cropped_rectangle_test = r"G:\temp\pig-face-22-03-2021-test"
 
-output_path_cropped_rectangle_test = r"G:\temp\pig-face-22-03-2021-test"
+output_path_cropped_rectangle = r"G:\temp\pig-face-rectangle"
+output_path_cropped_rectangle_test = r"G:\temp\pig-face-rectangle-test"
+
 
 image_example_name = r"DSC_V1_6460_2238.jpg"
 

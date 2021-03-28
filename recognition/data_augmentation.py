@@ -26,6 +26,22 @@ class Augmentation:
         self.log.info("init Augmentation")
 
 
+    def clean_augmented_images(self):
+        img_path_crop = detection_config.output_path_cropped_rectangle
+        pig_img_folders = os.listdir(img_path_crop)
+        for i, pig_name in enumerate(pig_img_folders):
+            img_path = os.path.join(img_path_crop, pig_name)
+            image_names = glob.glob(os.path.join(img_path, '[0-9]*DSC*'))
+            image_names.append(glob.glob(os.path.join(img_path, 'S*DSC*')))
+            for image_name in image_names:
+                image_name = os.path.basename(image_name)
+                image_full_path = os.path.join(img_path, image_name)
+                os.remove(image_full_path)
+
+            self.log.info("delete augmented in progress: " + str(i))
+        self.log.info('augmentation deleted finished')
+
+
     def generate_sharp_img(self):
         img_path_crop = detection_config.output_path_cropped_rectangle
         pig_img_folders = os.listdir(img_path_crop)
@@ -81,7 +97,8 @@ class Augmentation:
             brightness_range=[0.4,1.1],
             rotation_range=20,
             horizontal_flip=True,
-            fill_mode='constant'
+            # fill_mode='constant'
+            fill_mode='nearest'
         )
 
         # prepare iterator

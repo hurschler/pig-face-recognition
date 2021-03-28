@@ -26,7 +26,7 @@ np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
 log.info("read images from directory")
 pre = preprocessing.Preprocessing()
 detect = detection_util.DetectionUtil()
-img_dic = pre.readImages()
+img_dic = pre.readImagesRandom()
 
 df = pd.DataFrame(columns=['id', 'imageName', 'type', 'fsize', 'pigname', 'setversion', 'createdate', 'img_width',
                            'img_height', 'sharpness', 'flash', 'bright', 'contrast', 'sex', 'weight', 'age', 'y_max_hist'])

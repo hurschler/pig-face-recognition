@@ -3,7 +3,7 @@ from random import random
 import tensorflow as tf
 import logging.config
 import datetime
-from tensorflow.python.keras.applications.efficientnet import EfficientNetB0
+from tensorflow.python.keras.applications.efficientnet import EfficientNetB0, EfficientNetB7
 from tensorflow.python.keras.callbacks_v1 import TensorBoard
 from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from tensorflow.keras import layers
@@ -33,8 +33,11 @@ class EfficientNetModel:
 
 
     def define_model(self):
-        inputs = layers.Input(shape=(224, 224, 3))
-        model = EfficientNetB0(include_top=False, input_tensor=inputs, weights="imagenet")
+        # inputs = layers.Input(shape=(224, 224, 3))
+        inputs = layers.Input(shape=(600, 600, 3))
+        # model = EfficientNetB0(include_top=False, input_tensor=inputs, weights="imagenet")
+        model = EfficientNetB7(include_top=False, input_tensor=inputs, weights="imagenet")
+
         # Freeze the pretrained weights
         model.trainable = False
 
@@ -69,7 +72,7 @@ class EfficientNetModel:
         ]
 
         self.model.summary()
-        self.model.fit_generator(train_generator, epochs=100, callbacks=callb, validation_data=validation_generator)
+        self.model.fit_generator(train_generator, epochs=70, callbacks=callb, validation_data=validation_generator)
 
 
 
@@ -96,7 +99,7 @@ class EfficientNetModel:
 
     def get_embeddings(self, crop_img_name):
         # Get Embeddings
-        crop_img = load_img(crop_img_name, target_size=(224, 224))
+        crop_img = load_img(crop_img_name, target_size=(600, 600))
         crop_img = img_to_array(crop_img)
         crop_img = np.expand_dims(crop_img, axis=0)
         crop_img = preprocess_input(crop_img)

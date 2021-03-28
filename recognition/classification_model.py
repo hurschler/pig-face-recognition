@@ -40,25 +40,21 @@ class ClassificationModel(MlModel):
         # output = keras.layers.Dense(units=10, activation='softmax')(concat)
         # classifier_model = keras.Model(inputs=[input_], outputs=[output])
 
-        classifier_model = Sequential()
-        classifier_model.add(Dense(units=1024, input_dim=x_train.shape[1], kernel_initializer='glorot_uniform'))
+        classifier_model=Sequential()
+        classifier_model.add(Dense(units=1024, input_dim=x_train.shape[1],kernel_initializer='glorot_uniform'))
         classifier_model.add(Activation('relu'))
         classifier_model.add(Dropout(0.2))
-        classifier_model.add(
-            Dense(units=1024, kernel_initializer='he_uniform', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+        classifier_model.add(Dense(units=256,kernel_initializer='he_uniform', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
         classifier_model.add(Activation('relu'))
         classifier_model.add(Dropout(0.2))
-        classifier_model.add(Dense(units=10, kernel_initializer='he_uniform'))
+        classifier_model.add(Dense(units=20,kernel_initializer='he_uniform'))
         classifier_model.add(Activation('softmax'))
 
         # optimizer = keras.optimizers.Nadam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
-        optimizer = keras.optimizers.SGD(learning_rate=0.001)
+        optimizer=keras.optimizers.SGD(learning_rate=0.0001)
+        metrics=['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
+        loss = loss=tf.keras.losses.SparseCategoricalCrossentropy()
 
-        metrics = ['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
-        loss = tf.keras.losses.SparseCategoricalCrossentropy()
-
-        # Best Result 22.03.2021-23:11
-        # classifier_model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(),optimizer='nadam',metrics=['accuracy'])
 
         classifier_model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
         return classifier_model
@@ -80,7 +76,7 @@ class ClassificationModel(MlModel):
 
         callb = [
             lr_scheduler,
-            LRTensorBoard(log_dir=logdir, histogram_freq=1, write_graph=True, write_images=True, update_freq='epoch',
+            LRTensorBoard(log_dir=logdir, histogram_freq=1, write_graph=False, write_images=False, update_freq='epoch',
                           profile_batch=2, embeddings_freq=0, embeddings_metadata=None),
             ModelCheckpoint(self.checkpoint_path, save_weights_only=True, save_best_only=True, monitor="val_loss",
                             verbose=1),
@@ -88,7 +84,7 @@ class ClassificationModel(MlModel):
 
         self.summary_print()
         # https://www.mt-ag.com/blog/ki-werkstatt/einstieg-in-neuronale-netze-mit-keras/ (batch_size in 2er Potenzen)
-        self.model.fit(x_train, y_train, batch_size=2, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
+        self.model.fit(x_train, y_train, batch_size=1, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
 
     def predict2(self, embed, left, top, right, bottom, pig_dict, img):
         width = right - left
@@ -98,6 +94,7 @@ class ClassificationModel(MlModel):
         pig = self.model.predict(embed)
         label_nr = np.argmax(pig)
         print('Accuracy score: ', pig[0][label_nr])
+        # print('Accuracy score: ', pig[0][0][0][label_nr])
         print('Type of Key at dic: ', type(pig_dict.keys()))
         if label_nr in pig_dict.keys():
             print('Key found')

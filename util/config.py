@@ -17,4 +17,4 @@ output_path = r'/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-re
 
 image_sample_path = r'/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-recognition/sample'
 
-max_image_number = 30
+max_image_number = 100

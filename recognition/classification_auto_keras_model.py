@@ -28,7 +28,7 @@ class ClassificationAutoKerasModel(MlModel):
 
     # Softmax regressor to classify images based on encoding
     def define_classification_model(self, x_train):
-        clf = ak.StructuredDataClassifier(overwrite=True, max_trials=15)
+        clf = ak.StructuredDataClassifier(overwrite=True, max_trials=10)
         return clf
 
     def fit(self, ml_data):
@@ -39,11 +39,11 @@ class ClassificationAutoKerasModel(MlModel):
 
         logdir = "../logs/recognition/logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         callb = [
-            LRTensorBoard(log_dir=logdir, histogram_freq=1, write_graph=True, write_images=True, update_freq='epoch',
+            LRTensorBoard(log_dir=logdir, histogram_freq=1, write_graph=False, write_images=False, update_freq='epoch',
                           profile_batch=2, embeddings_freq=0, embeddings_metadata=None),
         ]
 
-        self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=200, callbacks=callb)
+        self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, callbacks=callb)
         print ("evaluate: ", self.model.evaluate(x_test, y_test))
 
     def predict2(self, embed, left, top, right, bottom, pig_dict, img):

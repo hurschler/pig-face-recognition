@@ -1,4 +1,6 @@
 import os
+from random import shuffle
+
 import cv2
 import util.config as config
 import glob
@@ -70,6 +72,28 @@ class Preprocessing(object):
             i = i + 1
 
         return img_dic
+
+    def readImagesRandom(self):
+        log.info("readImages")
+        dir_path = config.image_train_dir_path
+        log.info("image_dir: " + dir_path)
+        img_dic = {}
+        i = 0
+        files = glob.glob(dir_path + r"\*.JPG")
+        shuffle(files)
+        for imageFullFileName in files:
+            if i >= config.max_image_number:
+                break
+            log.debug(imageFullFileName)
+            image = cv2.imread(imageFullFileName)
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image_file_name = os.path.basename(imageFullFileName)
+            log.debug(image_file_name)
+            img_dic[image_file_name] = image_rgb
+            i = i + 1
+
+        return img_dic
+
 
     def readImagesWithSubDir(self):
         log.info("readImages with sub dir")
