@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import sklearn
 import tensorflow as tf
 import keras
 import datetime
@@ -13,9 +14,11 @@ from keras import backend as K
 from tensorflow.python.keras.layers import LeakyReLU
 import logging.config
 import util.logger_init
+import util.tensorboard_util as tbutil
 
 from recognition.ml_model import LRTensorBoard
 from recognition.ml_model import MlModel
+from util.tensorboard_util import plot_confusion_matrix, plot_to_image
 
 
 class ClassificationModel(MlModel):
@@ -25,6 +28,7 @@ class ClassificationModel(MlModel):
         self.log.info("init Classification Model: " + __name__)
         x_train = np.array(ml_data.x_train)
         self.model = self.define_classification_model(x_train)
+        self.ml_data = ml_data
 
 
     # Softmax regressor to classify images based on encoding
@@ -53,7 +57,7 @@ class ClassificationModel(MlModel):
         # optimizer = keras.optimizers.Nadam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
         optimizer=keras.optimizers.SGD(learning_rate=0.0001)
         metrics=['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
-        loss = loss=tf.keras.losses.SparseCategoricalCrossentropy()
+        loss = tf.keras.losses.SparseCategoricalCrossentropy()
 
 
         classifier_model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
@@ -74,7 +78,12 @@ class ClassificationModel(MlModel):
 
         lr_scheduler = LearningRateScheduler(self.scheduler)
 
+        self.file_writer_cm = tf.summary.create_file_writer(logdir + '/cm')
+
+        cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=self.log_confusion_matrix)
+
         callb = [
+            cm_callback,
             lr_scheduler,
             LRTensorBoard(log_dir=logdir, histogram_freq=1, write_graph=False, write_images=False, update_freq='epoch',
                           profile_batch=2, embeddings_freq=0, embeddings_metadata=None),
@@ -84,7 +93,7 @@ class ClassificationModel(MlModel):
 
         self.summary_print()
         # https://www.mt-ag.com/blog/ki-werkstatt/einstieg-in-neuronale-netze-mit-keras/ (batch_size in 2er Potenzen)
-        self.model.fit(x_train, y_train, batch_size=1, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
+        self.model.fit(x_train, y_train, batch_size=1, epochs=50, callbacks=callb, validation_data=(x_test, y_test))
 
     def predict2(self, embed, left, top, right, bottom, pig_dict, img):
         width = right - left
@@ -127,3 +136,21 @@ class ClassificationModel(MlModel):
     # Define your scheduling function
     def scheduler(self, epoch):
         return 0.001 * 0.95 ** epoch
+
+
+    def log_confusion_matrix(self, epoch, logs):
+
+        # Use the model to predict the values from the test_images.
+        test_pred_raw = self.model.predict(self.ml_data.x_test)
+
+        test_pred = np.argmax(test_pred_raw, axis=1)
+
+        # Calculate the confusion matrix using sklearn.metrics
+        cm = sklearn.metrics.confusion_matrix(self.ml_data.y_test, test_pred)
+
+        figure = plot_confusion_matrix(cm, class_names=self.ml_data.pig_dict.values())
+        cm_image = plot_to_image(figure)
+
+        # Log the confusion matrix as an image summary.
+        with self.file_writer_cm.as_default():
+            tf.summary.image("Confusion Matrix", cm_image, step=epoch)
