@@ -32,3 +32,4 @@ pyexiv2~=2.5.0
 exifread
 Flask-Cors
 keras_vggface
+keras_applications
