@@ -33,3 +33,4 @@ exifread
 Flask-Cors
 keras_vggface
 keras_applications
+sklearn
