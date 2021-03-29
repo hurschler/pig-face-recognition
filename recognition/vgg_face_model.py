@@ -1,4 +1,4 @@
-
+from keras import backend as K
 from tensorflow.keras.layers import ZeroPadding2D, Convolution2D, MaxPooling2D
 from tensorflow.keras.layers import Dense, Dropout, Softmax, Flatten, Activation, BatchNormalization
 import os
@@ -8,8 +8,10 @@ from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.applications.imagenet_utils import preprocess_input
 import logging.config
+from keras.layers import Input
 from keras_vggface.vggface import VGGFace
 import util.logger_init
+
 
 
 # Wrapper Class around Keras Model
@@ -21,7 +23,6 @@ class VggFaceModel:
         self.sequential_model = self.define_model_vggface16_backend()
         # self.sequential_model = self.define_model_resnet_backend()
         # self.sequential_model = self.define_model_senet_backend()
-
 
         self.model = self.sequential_model
 
@@ -86,6 +87,7 @@ class VggFaceModel:
 
     def load_weights(self):
         self.sequential_model.load_weights('../model/vgg_face_weights.h5')
+
 
     def vgg_face(self, img):
         return self.model(img)

@@ -1,9 +1,10 @@
 import cv2
 import numpy as np
-import sklearn
+# import sklearn
 import tensorflow as tf
 import keras
 import datetime
+from sklearn.metrics import confusion_matrix
 from keras.regularizers import l2
 from tensorflow.keras.models import load_model
 from tensorflow.keras.models import Sequential, Model
@@ -24,6 +25,9 @@ from util.tensorboard_util import plot_confusion_matrix, plot_to_image
 class ClassificationModel(MlModel):
 
     def __init__(self, ml_data):
+        self.logdir = "../logs/recognition/logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        self.file_writer_cm = tf.summary.create_file_writer(self.logdir + '/cm')
+        self.checkpoint_path = '../model/face_model'
         self.log = logging.getLogger(__name__)
         self.log.info("init Classification Model: " + __name__)
         x_train = np.array(ml_data.x_train)
@@ -33,17 +37,6 @@ class ClassificationModel(MlModel):
 
     # Softmax regressor to classify images based on encoding
     def define_classification_model(self, x_train):
-        # input_ = keras.layers.Input(shape=x_train.shape[1])
-        # hidden1 = keras.layers.Dense(30, activation='relu')(input_)
-        # hidden1 = keras.layers.BatchNormalization()(hidden1)
-        # hidden1 = Dropout(0.2)(hidden1)
-        # hidden2 = keras.layers.Dense(30, activation='relu')(hidden1)
-        # hidden2 = keras.layers.BatchNormalization()(hidden2)
-        # hidden2 = Dropout(0.2)(hidden2)
-        # concat = keras.layers.Concatenate()([input_, hidden2])
-        # output = keras.layers.Dense(units=10, activation='softmax')(concat)
-        # classifier_model = keras.Model(inputs=[input_], outputs=[output])
-
         classifier_model=Sequential()
         classifier_model.add(Dense(units=1024, input_dim=x_train.shape[1],kernel_initializer='glorot_uniform'))
         classifier_model.add(Activation('relu'))
@@ -70,22 +63,16 @@ class ClassificationModel(MlModel):
         x_test = np.array(ml_data.x_test)
         y_test = np.array(ml_data.y_test)
 
-        logdir = "../logs/recognition/logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        tf.debugging.experimental.enable_dump_debug_info(logdir, tensor_debug_mode="FULL_HEALTH",
+
+        tf.debugging.experimental.enable_dump_debug_info(self.logdir, tensor_debug_mode="FULL_HEALTH",
                                                          circular_buffer_size=-1)
-
-        self.checkpoint_path = '../model/face_model'
-
         lr_scheduler = LearningRateScheduler(self.scheduler)
-
-        self.file_writer_cm = tf.summary.create_file_writer(logdir + '/cm')
-
         cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=self.log_confusion_matrix)
 
         callb = [
             cm_callback,
             lr_scheduler,
-            LRTensorBoard(log_dir=logdir, histogram_freq=1, write_graph=False, write_images=False, update_freq='epoch',
+            LRTensorBoard(log_dir=self.logdir, histogram_freq=1, write_graph=False, write_images=False, update_freq='epoch',
                           profile_batch=2, embeddings_freq=0, embeddings_metadata=None),
             ModelCheckpoint(self.checkpoint_path, save_weights_only=True, save_best_only=True, monitor="val_loss",
                             verbose=1),
@@ -93,7 +80,7 @@ class ClassificationModel(MlModel):
 
         self.summary_print()
         # https://www.mt-ag.com/blog/ki-werkstatt/einstieg-in-neuronale-netze-mit-keras/ (batch_size in 2er Potenzen)
-        self.model.fit(x_train, y_train, batch_size=1, epochs=50, callbacks=callb, validation_data=(x_test, y_test))
+        self.model.fit(x_train, y_train, batch_size=1, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
 
     def predict2(self, embed, left, top, right, bottom, pig_dict, img):
         width = right - left
@@ -146,7 +133,7 @@ class ClassificationModel(MlModel):
         test_pred = np.argmax(test_pred_raw, axis=1)
 
         # Calculate the confusion matrix using sklearn.metrics
-        cm = sklearn.metrics.confusion_matrix(self.ml_data.y_test, test_pred)
+        cm = confusion_matrix(self.ml_data.y_test, test_pred)
 
         figure = plot_confusion_matrix(cm, class_names=self.ml_data.pig_dict.values())
         cm_image = plot_to_image(figure)
