@@ -1,9 +1,7 @@
 import cv2
 import recognition.config as config
 from unittest import TestCase
-from util.detection_util import DetectionUtil
 import logging.config
-import util.logger_init
 
 
 class TestPreprocessing(TestCase):
