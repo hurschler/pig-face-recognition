@@ -41,6 +41,10 @@ app.config["IMAGE_UPLOADS"] = IMAGE_UPLOADS
 log = logging.getLogger(__name__)
 
 
+def setUp(self):
+    self.log = logging.getLogger(__name__)
+
+
 @app.route("/api/swagger.json")
 def create_swagger_spec():
     return jsonify(APISpec.spec.to_dict())
