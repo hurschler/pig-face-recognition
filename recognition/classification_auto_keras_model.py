@@ -24,11 +24,12 @@ class ClassificationAutoKerasModel(MlModel):
         self.log.info("init Classification Model: " + __name__)
         x_train = np.array(ml_data.x_train)
         self.model = self.define_classification_model(ml_data.x_train)
+        self.ml_data = ml_data
 
 
     # Softmax regressor to classify images based on encoding
     def define_classification_model(self, x_train):
-        clf = ak.StructuredDataClassifier(overwrite=True, max_trials=10)
+        clf = ak.StructuredDataClassifier(overwrite=True, max_trials=6)
         return clf
 
     def fit(self, ml_data):
@@ -38,12 +39,18 @@ class ClassificationAutoKerasModel(MlModel):
         y_test = np.array(ml_data.y_test)
 
         logdir = "../logs/recognition/logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+
+        lr_scheduler = LearningRateScheduler(self.scheduler)
+        cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=self.log_confusion_matrix)
+
         callb = [
+            # cm_callback,
+            # lr_scheduler,
             LRTensorBoard(log_dir=logdir, histogram_freq=1, write_graph=False, write_images=False, update_freq='epoch',
                           profile_batch=2, embeddings_freq=0, embeddings_metadata=None),
         ]
 
-        self.model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=50, callbacks=callb)
+        self.model.fit(x_train, y_train, batch_size=4, validation_data=(x_test, y_test), epochs=100, callbacks=callb)
         print ("evaluate: ", self.model.evaluate(x_test, y_test))
 
     def predict2(self, embed, left, top, right, bottom, pig_dict, img):
@@ -82,6 +89,13 @@ class ClassificationAutoKerasModel(MlModel):
     def load_model(self):
         self.model = load_model('../model/model_autokeras', custom_objects=ak.CUSTOM_OBJECTS )
         self.log.info(self.model.summary())
+
+
+    def predict_label(self, embed):
+        pig = self.model.predict(embed)
+        label_nr = np.argmax(pig)
+        print('Accuracy score: ', pig[0][label_nr])
+        return label_nr
 
 
 

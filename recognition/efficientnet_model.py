@@ -18,7 +18,7 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.applications.imagenet_utils import preprocess_input
 import logging.config
 import util.logger_init
-import util.logger_init
+
 
 
 # Wrapper Class around Keras Model

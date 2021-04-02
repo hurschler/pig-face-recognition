@@ -27,8 +27,8 @@ class Vgg19:
     def __init__(self):
         self.log = logging.getLogger(__name__)
         self.log.info("init Vgg19")
-        self.height = 224
-        self.width = 224
+        self.height = 448
+        self.width = 448
         self.model = self.define_model()
 
     def define_model(self):
@@ -48,6 +48,7 @@ class Vgg19:
         metrics = ['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
         loss = tf.keras.losses.SparseCategoricalCrossentropy()
         model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+        model.summary()
         return model
 
     def getModel(self):
@@ -69,3 +70,8 @@ class Vgg19:
 
     def getHeight(self):
         return self.height
+
+    def remove_last_layer(self):
+        # Remove Last Softmax layer and get model upto last flatten layer with outputs 2622 units
+        self.model = Model(inputs=self.model.layers[0].input,
+                           outputs=self.model.layers[-2].output)

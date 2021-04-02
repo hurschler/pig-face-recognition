@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import cv2
 import pandas as pd
 import numpy as np
+import os
 import requests
 import tensorflow as tf
 from keras import backend as K
@@ -12,6 +13,9 @@ from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input
 
 tf.compat.v1.disable_eager_execution()
+
+os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
+os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
 def generate_class_activation_map(img_path):
     K.clear_session()
@@ -47,7 +51,10 @@ def generate_class_activation_map(img_path):
     cv2.imwrite(output, superimposed_img)
     img = mpimg.imread(output)
     plt.imshow(img)
-    plt.axis('off')
-    plt.title(predictions.loc[0, 'category'].upper())
+    # plt.axis('off')
+    # plt.title(predictions.loc[0, 'category'].upper())
+    plt.show()
+
 
 generate_class_activation_map('../sample/DSC_V1_6460_2238.JPG')
+cv2.waitKey(0)

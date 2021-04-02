@@ -16,19 +16,8 @@ log.info("Logger is initialized")
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
-# read Images for preprocessing
-# pre.readImage()
-# img_dic = pre.readImages()
-# img_dic = pre.readImagesWithSubDir()
-# img_dic = pre.toGrey(img_dic)
-# img_dic = pre.scale(img_dic)
-# pre.show(img_dic)
-# img_dic = pre.toEqualizeHist(img_dic)
-
-
 # 1. Image Preprocessing
 pre = Preprocessing()
-
 
 # 2. Image Augmentation
 aug = Augmentation()
@@ -65,10 +54,8 @@ classification_model.fit(ml_data)
 classification_model.save_model()
 
 # 12. Predict
-# img = rec_util.predict2(vgg_face_model, classification_model, ml_data, r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\train\DSC_V1_6460_2238.JPG")
-# img = rec_util.predict2(vgg_face_model, classification_model, ml_data, r"/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-recognition/data/validate/6357/DSC_V2_6357_2762.JPG-crop-mask0.jpg")
-# Visualize debug informations
-# vgg_face_model.debug_model(r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\train\DSC_V1_6460_2238.JPG")
-# Visualize the result
-# rec_util.plot(img)
+# img_name_full_path = r"G:\temp\pig-face-rectangle-test\6446\DSC_V2_6446_2774.JPG-crop-mask0.jpg"
+img_name_full_path = r"G:\temp\pig-face-rectangle-test\6446\DSC_V2_6446_2775.JPG-crop-mask0.jpg"
+
+img = rec_util.predict2(vgg_face_model, classification_model, ml_data, img_name_full_path)
 

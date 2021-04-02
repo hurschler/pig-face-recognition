@@ -15,13 +15,9 @@ from PIL import ImageChops
 from PIL import Image as Pil_Image
 import sys
 
-
-
 log = logging.getLogger(__name__)
 
 np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
-
-
 
 log.info("read images from directory")
 pre = preprocessing.Preprocessing()
@@ -29,7 +25,8 @@ detect = detection_util.DetectionUtil()
 img_dic = pre.readImagesRandom()
 
 df = pd.DataFrame(columns=['id', 'imageName', 'type', 'fsize', 'pigname', 'setversion', 'createdate', 'img_width',
-                           'img_height', 'sharpness', 'flash', 'bright', 'contrast', 'sex', 'weight', 'age', 'y_max_hist'])
+                           'img_height', 'sharpness', 'flash', 'bright', 'contrast', 'sex', 'weight', 'age',
+                           'y_max_hist'])
 i = 0
 
 
@@ -123,10 +120,10 @@ for key in img_dic:
 
     plt.rcParams["figure.figsize"] = (8, 6)
     plt.subplot(121)
-    y, x, _ = plt.hist(img.ravel(), bins = 256, color = 'orange', )
-    plt.hist(img[:, :, 0].ravel(), bins = 256, color = 'red', alpha = 0.5)
-    plt.hist(img[:, :, 1].ravel(), bins = 256, color = 'Green', alpha = 0.5)
-    plt.hist(img[:, :, 2].ravel(), bins = 256, color = 'Blue', alpha = 0.5)
+    y, x, _ = plt.hist(img.ravel(), bins=256, color='orange', )
+    plt.hist(img[:, :, 0].ravel(), bins=256, color='red', alpha=0.5)
+    plt.hist(img[:, :, 1].ravel(), bins=256, color='Green', alpha=0.5)
+    plt.hist(img[:, :, 2].ravel(), bins=256, color='Blue', alpha=0.5)
     plt.xlabel('Intensity Value')
     plt.ylabel('Count')
     plt.legend(['Total', 'Red_Channel', 'Green_Channel', 'Blue_Channel'])
@@ -155,4 +152,4 @@ plt.xlabel("id", fontsize=15)
 plt.ylabel("sharpness", fontsize=15)
 plt.xscale('log')
 plt.show()
-print('Angelika')
+

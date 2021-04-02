@@ -9,16 +9,21 @@ import logging.config
 import util.logger_init
 import util.detection_config as detection_config
 import jsonpickle
+import util.config as config
+import glob
 
+json_file_full_name = '../output/data-vgg19.json'
+
+log = logging.getLogger(__name__)
 
 def convert_to_json_and_save(ml_data):
     ml_data_json = jsonpickle.encode(ml_data)
-    with open('../output/data.json', "w") as fh:
+    with open(json_file_full_name, "w") as fh:
         fh.write(ml_data_json)
 
 
-def load_ml_data_from_json_file(ml_data, file_full_name):
-    with open(file_full_name, "r") as fh:
+def load_ml_data_from_json_file(ml_data):
+    with open(json_file_full_name, "r") as fh:
         ml_data = jsonpickle.loads(fh.read())
     return ml_data
 
@@ -61,7 +66,7 @@ def calculate_feature_vectors_test(vgg19_model, ml_data):
 
 
 
-def predict2(vgg19_model, classification_model, ml_data, img_name):
+def predict(vgg19_model, classification_model, ml_data, img_name):
     img_pil = load_img(img_name, target_size=(vgg19_model.getWidth(), vgg19_model.getHeight()))
     if img_pil is None or img_pil.size == 0:
         print("Please check image path or some error occured")
@@ -79,3 +84,41 @@ def predict2(vgg19_model, classification_model, ml_data, img_name):
         # Pig in image
         print('Pig(s) in image is/are:' + ' '.join([str(elem) for elem in persons_in_img]))
         return img_opencv
+
+
+def predict_label(vgg19_model, classification_model, ml_data, img_name):
+    img_pil = load_img(img_name, target_size=(vgg19_model.getWidth(), vgg19_model.getHeight()))
+    if img_pil is None or img_pil.size == 0:
+        print("Please check image path or some error occured")
+    else:
+        img_encode = vgg19_model.get_embeddings(img_name)
+        label_nr = classification_model.predict_label(img_encode)
+
+    return label_nr
+
+
+
+def predict_validation_set(vgg19_model, classification_model, ml_data):
+    log.info("readImages names with sub dir")
+    dir_path = config.image_test_with_subdir_path
+    log.info("image_dir: " + dir_path)
+    files = glob.glob(dir_path + r"/*/")
+    y_pred = []
+    i = 0
+    for path_element in files:
+        if os.path.isdir(path_element):
+            log.debug(path_element)
+            files_on_sub_dir = glob.glob(os.path.join(dir_path, path_element) + r"\*.JPG")
+            for image_on_sub_dir in files_on_sub_dir:
+                log.info(str(i) + " image on sub dir: " + image_on_sub_dir)
+                label_nr = predict_label(vgg19_model, classification_model, ml_data, image_on_sub_dir)
+                if label_nr in ml_data.pig_dict.keys():
+                    print('Key found')
+                    name = ml_data.pig_dict[label_nr]
+                else:
+                    print('Key not found, try with string type')
+                    name = ml_data.pig_dict[str(label_nr)]
+                y_pred.append(name)
+                i = i + 1
+
+    return y_pred

@@ -11,6 +11,7 @@ import logging.config
 from keras.layers import Input
 from keras_vggface.vggface import VGGFace
 import util.logger_init
+import keras
 
 
 
@@ -87,6 +88,17 @@ class VggFaceModel:
 
     def load_weights(self):
         self.sequential_model.load_weights('../model/vgg_face_weights.h5')
+
+
+    def addAugmentationLayer(self):
+        data_augmentation = keras.Sequential([
+            keras.layers.experimental.preprocessing.RandomRotation(factor=0.4, fill_mode="wrap"),
+            keras.layers.experimental.preprocessing.RandomTranslation(height_factor=0.2, width_factor=0.2, fill_mode="wrap"),
+            keras.layers.experimental.preprocessing.RandomFlip("horizontal"),
+            keras.layers.experimental.preprocessing.RandomContrast(factor=0.2),
+            keras.layers.experimental.preprocessing.RandomHeight(factor=0.2),
+            keras.layers.experimental.preprocessing.RandomWidth(factor=0.2)
+        ])
 
 
     def vgg_face(self, img):
