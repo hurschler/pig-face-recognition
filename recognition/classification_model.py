@@ -38,16 +38,13 @@ class ClassificationModel(MlModel):
     # Softmax regressor to classify images based on encoding
     def define_classification_model(self, x_train):
         # stabile 0.375 - 0.4 auf vgg16 (lecun_normal)
-        kernel_init = keras.initializers.lecun_normal(seed=None)
-        # kernel_init = keras.initializers.glorot_normal(seed=None)
+        # kernel_init = keras.initializers.lecun_normal(seed=None)
+        kernel_init = keras.initializers.glorot_normal()
 
         classifier_model=Sequential()
         classifier_model.add(Dense(units=1024, kernel_regularizer=l2(1e-5), input_dim=x_train.shape[1], kernel_initializer=kernel_init))
         classifier_model.add(Activation('tanh'))
         classifier_model.add(Dropout(0.2))
-        # classifier_model.add(Dense(units=128, kernel_initializer=kernel_init, kernel_regularizer=l2(0.01)))
-        # classifier_model.add(Activation('relu'))
-        # classifier_model.add(Dropout(0.2))
         classifier_model.add(Dense(units=50,kernel_initializer=kernel_init))
         classifier_model.add(Activation('softmax'))
 
