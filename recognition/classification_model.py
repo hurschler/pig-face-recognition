@@ -43,7 +43,7 @@ class ClassificationModel(MlModel):
 
         classifier_model=Sequential()
         classifier_model.add(Dense(units=1024, kernel_regularizer=l2(1e-5), input_dim=x_train.shape[1], kernel_initializer=kernel_init))
-        classifier_model.add(Activation('relu'))
+        classifier_model.add(Activation('tanh'))
         classifier_model.add(Dropout(0.2))
         # classifier_model.add(Dense(units=128, kernel_initializer=kernel_init, kernel_regularizer=l2(0.01)))
         # classifier_model.add(Activation('relu'))
