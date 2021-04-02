@@ -45,15 +45,15 @@ class ClassificationModel(MlModel):
         classifier_model.add(Dense(units=1024, kernel_regularizer=l2(1e-5), input_dim=x_train.shape[1], kernel_initializer=kernel_init))
         classifier_model.add(Activation('relu'))
         classifier_model.add(Dropout(0.2))
-        classifier_model.add(Dense(units=128, kernel_initializer=kernel_init, kernel_regularizer=l2(0.01)))
-        classifier_model.add(Activation('relu'))
-        classifier_model.add(Dropout(0.2))
+        # classifier_model.add(Dense(units=128, kernel_initializer=kernel_init, kernel_regularizer=l2(0.01)))
+        # classifier_model.add(Activation('relu'))
+        # classifier_model.add(Dropout(0.2))
         classifier_model.add(Dense(units=50,kernel_initializer=kernel_init))
         classifier_model.add(Activation('softmax'))
 
-        # optimizer = keras.optimizers.Nadam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
+        optimizer = keras.optimizers.Nadam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
         # optimizer = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
-        optimizer = keras.optimizers.SGD(lr=1e-4, decay=1e-6, momentum=0.9, nesterov=True)
+        # optimizer = keras.optimizers.SGD(lr=1e-4, decay=1e-6, momentum=0.9, nesterov=True)
         # optimizer=keras.optimizers.SGD(learning_rate=0.0001)
         metrics=['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
         loss = tf.keras.losses.SparseCategoricalCrossentropy()
@@ -86,7 +86,7 @@ class ClassificationModel(MlModel):
 
         self.summary_print()
         # https://www.mt-ag.com/blog/ki-werkstatt/einstieg-in-neuronale-netze-mit-keras/ (batch_size in 2er Potenzen)
-        self.model.fit(x_train, y_train, batch_size=3, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
+        self.model.fit(x_train, y_train, batch_size=10, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
 
     def predict2(self, embed, left, top, right, bottom, pig_dict, img):
         width = right - left

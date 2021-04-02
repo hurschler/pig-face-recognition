@@ -29,7 +29,7 @@ class ClassificationAutoKerasModel(MlModel):
 
     # Softmax regressor to classify images based on encoding
     def define_classification_model(self, x_train):
-        clf = ak.StructuredDataClassifier(overwrite=True, max_trials=6)
+        clf = ak.StructuredDataClassifier(overwrite=True, max_trials=10)
         return clf
 
     def fit(self, ml_data):
@@ -50,7 +50,7 @@ class ClassificationAutoKerasModel(MlModel):
                           profile_batch=2, embeddings_freq=0, embeddings_metadata=None),
         ]
 
-        self.model.fit(x_train, y_train, batch_size=4, validation_data=(x_test, y_test), epochs=100, callbacks=callb)
+        self.model.fit(x_train, y_train, batch_size=10, validation_data=(x_test, y_test), epochs=100, callbacks=callb)
         print ("evaluate: ", self.model.evaluate(x_test, y_test))
 
     def predict2(self, embed, left, top, right, bottom, pig_dict, img):

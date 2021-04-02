@@ -35,14 +35,14 @@ ml_data = ml_data.MlData([],[],[],[], {})
 ml_data = vgg19_util.load_ml_data_from_json_file(ml_data)
 
 # 9. Create a new Classification Model
-# classification_model = classification_model.ClassificationModel(ml_data)
-classification_model = classification_auto_keras_model.ClassificationAutoKerasModel(ml_data)
+classification_model = classification_model.ClassificationModel(ml_data)
+# classification_model = classification_auto_keras_model.ClassificationAutoKerasModel(ml_data)
 
 # 10. Train the Classification model with the embedding Datas
-# classification_model.fit(ml_data)
+classification_model.fit(ml_data)
 
 # 11. Export the Model
-# classification_model.save_model()
+classification_model.save_model()
 
 # Load the Model from a file
 classification_model.load_model()
