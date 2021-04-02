@@ -83,7 +83,7 @@ class ClassificationModel(MlModel):
 
         self.summary_print()
         # https://www.mt-ag.com/blog/ki-werkstatt/einstieg-in-neuronale-netze-mit-keras/ (batch_size in 2er Potenzen)
-        self.model.fit(x_train, y_train, batch_size=10, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
+        self.model.fit(x_train, y_train, batch_size=20, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
 
     def predict2(self, embed, left, top, right, bottom, pig_dict, img):
         width = right - left
