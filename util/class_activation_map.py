@@ -56,5 +56,5 @@ def generate_class_activation_map(img_path):
     plt.show()
 
 
-generate_class_activation_map('../sample/DSC_V1_6460_2238.JPG')
-cv2.waitKey(0)
+# generate_class_activation_map('../sample/DSC_V1_6460_2238.JPG')
+# cv2.waitKey(0)
