@@ -7,6 +7,7 @@ from tensorflow.python.keras.applications.efficientnet import EfficientNetB0, Ef
 from tensorflow.python.keras.callbacks_v1 import TensorBoard
 from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from tensorflow.keras import layers
+from tensorflow.python.keras.layers import AveragePooling2D
 from tensorflow.python.ops.init_ops_v2 import glorot_uniform
 from tensorflow.keras.layers import ZeroPadding2D, Convolution2D, MaxPooling2D
 from tensorflow.keras.layers import Dense, Dropout, Softmax, Flatten, Activation, BatchNormalization
@@ -38,8 +39,14 @@ class EfficientNetModel:
         # model = EfficientNetB0(include_top=False, input_tensor=inputs, weights="imagenet")
         model = EfficientNetB7(include_top=False, input_tensor=inputs, weights="imagenet")
 
+
+        # x = model.output
+        # x = AveragePooling2D((5, 5), name='avg_pool')(x)
+
+
         # Freeze the pretrained weights
-        model.trainable = False
+        # model.trainable = False
+        model.trainable = True
 
         x = model.output
         x = layers.GlobalAveragePooling2D(name="avg_pool")(x)

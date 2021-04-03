@@ -41,8 +41,6 @@ efficientnet_face_model = efficientnet_model.EfficientNetModel()
 ml_data = ml_data.MlData([],[],[],[], {})
 
 # 7. Read Images from Disk and calculate the feature vector
-# rec_util.calculate_feature_vectors_train(vgg_face_model, ml_data)
-# rec_util.calculate_feature_vectors_test(vgg_face_model, ml_data)
 # train_generator = eff_util.load_train_dataset()
 # validation_generator = eff_util.load_validate_dataset()
 
@@ -50,21 +48,21 @@ ml_data = ml_data.MlData([],[],[],[], {})
 # efficientnet_face_model.fit(ml_data)
 
 # eff_util.calculate_feature_vectors_train(efficientnet_face_model, ml_data)
-# eff_util.calculate_feature_vectors_test(efficientnet_face_model, ml_data)
+#eff_util.calculate_feature_vectors_test(efficientnet_face_model, ml_data)
 
 
 # 8. convert all feature vectors to JSON File
 # eff_util.convert_to_json_and_save(ml_data)
-ml_data = eff_util.load_ml_data_from_json_file(ml_data, '../output/data.json')
+ml_data = eff_util.load_ml_data_from_json_file(ml_data)
 
 # 9. Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)
 
 # 10. Train the Classification model with the embedding Datas
-# classification_model.fit(ml_data)
+classification_model.fit(ml_data)
 
 # 11. Export the Model
-# classification_model.save_model()
+classification_model.save_model()
 # efficientnet_face_model.save_model()
 
 # Load the Model from a file

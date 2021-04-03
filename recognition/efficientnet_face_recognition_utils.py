@@ -1,10 +1,10 @@
 import os
 import cv2
+import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 from keras_preprocessing.image import ImageDataGenerator
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
-from tensorflow.keras.applications.imagenet_utils import preprocess_input
 import tensorflow.keras.backend as K
 import logging.config
 import util.logger_init
@@ -12,15 +12,16 @@ import util.detection_config as detection_config
 import jsonpickle
 import recognition.ml_data
 
+file_full_name_json = '../output/data-effnet-b7.json'
 
 def convert_to_json_and_save(ml_data):
     ml_data_json = jsonpickle.encode(ml_data)
-    with open('../output/data.json', "w") as fh:
+    with open(file_full_name_json, "w") as fh:
         fh.write(ml_data_json)
 
 
-def load_ml_data_from_json_file(ml_data, file_full_name):
-    with open(file_full_name, "r") as fh:
+def load_ml_data_from_json_file(ml_data):
+    with open(file_full_name_json, "r") as fh:
         ml_data = jsonpickle.loads(fh.read())
     return ml_data
 
@@ -55,7 +56,7 @@ def calculate_feature_vectors_train(efficientnet_face_model, ml_data):
             img = load_img(os.path.join(img_path_crop, pig_name, image_name), target_size=(600, 600))
             img = img_to_array(img)
             img = np.expand_dims(img, axis=0)
-            img = preprocess_input(img)
+            img = tf.keras.applications.efficientnet.preprocess_input(img)
             img_encode = efficientnet_face_model.efficientnet_face(img)
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()
             ml_data.x_train.append(feature_vector)
@@ -74,7 +75,8 @@ def calculate_feature_vectors_test(efficientnet_face_model, ml_data):
             img = load_img(os.path.join(img_path_crop, pig_name, image_name), target_size=(600, 600))
             img = img_to_array(img)
             img = np.expand_dims(img, axis=0)
-            img = preprocess_input(img)
+            tf.keras.applications.efficientnet.center_crop_and_resize()
+            img = tf.keras.applications.efficientnet.preprocess_input(img)
             img_encode = efficientnet_face_model.efficientnet_face(img)
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()
             ml_data.x_test.append(feature_vector)

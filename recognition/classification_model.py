@@ -44,6 +44,7 @@ class ClassificationModel(MlModel):
         classifier_model=Sequential()
         classifier_model.add(Dense(units=1024, kernel_regularizer=l2(1e-5), input_dim=x_train.shape[1], kernel_initializer=kernel_init))
         classifier_model.add(Activation('tanh'))
+        # classifier_model.add(Activation('relu'))
         classifier_model.add(Dropout(0.2))
         classifier_model.add(Dense(units=50,kernel_initializer=kernel_init))
         classifier_model.add(Activation('softmax'))
@@ -83,7 +84,7 @@ class ClassificationModel(MlModel):
 
         self.summary_print()
         # https://www.mt-ag.com/blog/ki-werkstatt/einstieg-in-neuronale-netze-mit-keras/ (batch_size in 2er Potenzen)
-        self.model.fit(x_train, y_train, batch_size=20, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
+        self.model.fit(x_train, y_train, batch_size=10, epochs=100, callbacks=callb, validation_data=(x_test, y_test))
 
     def predict2(self, embed, left, top, right, bottom, pig_dict, img):
         width = right - left
