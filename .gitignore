@@ -149,4 +149,5 @@ local.properties
 
 # Data
 /data
+/recognition/structured_data_classifier/
 
