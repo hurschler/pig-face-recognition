@@ -32,9 +32,10 @@ class ReportCreator():
         dir_path = config.image_train_dir_path
         self.log.info("image_dir to build dictionary: " + dir_path)
         i = 0
-        files = glob.glob(dir_path + r"\*.JPG")
+        files = [x for x in os.listdir(dir_path) if (x.endswith('.jpg') or x.endswith('.JPG') or x.endswith('.png') or x.endswith('.PNG'))]
         detection_util = DetectionUtil()
         for imageFullFileName in files:
+            imageFullFileName = os.path.join(dir_path, imageFullFileName)
             if i >= config.max_image_number:
                 break
             image_file_name = os.path.basename(imageFullFileName)
