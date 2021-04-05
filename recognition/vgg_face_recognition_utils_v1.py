@@ -13,7 +13,7 @@ import recognition.vgg_face_recognition_utils_v1 as rec_util
 from PIL import Image as pil_image
 import logging.config
 import util.logger_init
-import util.detection_config as detection_config
+import util.config as config
 import jsonpickle
 
 
@@ -51,7 +51,7 @@ def load_ml_data_from_json_file(ml_data, file_full_name):
 
 
 def calculate_feature_vectors_train(vgg_face_model, ml_data):
-    img_path_crop = detection_config.output_path_cropped_rectangle
+    img_path_crop = config.output_path_cropped_rectangle
     pig_img_folders = os.listdir(img_path_crop)
     for i, pig_name in enumerate(pig_img_folders):
         ml_data.pig_dict[i] = pig_name
@@ -69,7 +69,7 @@ def calculate_feature_vectors_train(vgg_face_model, ml_data):
             print ('TRAIN-Vector pig-number: ', i, ' pig_name: ', pig_name, 'image_name:  ', image_name, 'length of Feature-Vector: ', len(feature_vector), ' Feature-Vector: ', feature_vector)
 
 def calculate_feature_vectors_test(vgg_face_model, ml_data):
-    img_path_crop = detection_config.output_path_cropped_rectangle_test
+    img_path_crop = config.output_path_cropped_rectangle_test
     pig_img_folders = os.listdir(img_path_crop)
     for i, pig_name in enumerate(pig_img_folders):
         ml_data.pig_dict[i] = pig_name
@@ -91,7 +91,7 @@ def calculate_feature_vectors_test(vgg_face_model, ml_data):
 
 def test_data(vgg_face_model, ml_data, i, pig_name):
     # Prepare Test Data
-    img_path_crop = detection_config.output_path_cropped_rectangle
+    img_path_crop = config.output_path_cropped_rectangle
     person_folders = os.listdir(img_path_crop)
     test_image_names = os.listdir(os.path.join(img_path_crop, pig_name))
     for image_name in test_image_names:

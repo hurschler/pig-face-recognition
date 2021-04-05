@@ -22,11 +22,9 @@ def read_config(cfg_files):
 
 config = read_config([local_property_file, build_property_file])
 
-image_train_dir_path = config.get('glob', 'image_train_dir_path')
+image_root_dir_path = config.get('glob', 'image_root_dir_path')
 
-image_root_dir_path = r'D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\train'
-
-# image_train_dir_path = os.path.join(image_root_dir_path, "train")
+image_train_dir_path = os.path.join(image_root_dir_path, "train")
 
 image_train_with_subdir_path = os.path.join(image_root_dir_path, "cropped-subdir-08-03-2021")
 
@@ -43,3 +41,13 @@ output_path = r'/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-re
 image_sample_path = r'/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-recognition/sample'
 
 max_image_number = 10
+
+# Recognition
+output_path_cropped_rectangle_test = r"G:\temp\pig-face-rectangle-test"
+output_path_cropped_rectangle = r"G:\temp\pig-face-rectangle"
+
+
+
+# Detection
+output_dir_path = config.get('glob', 'output_dir_path')
+image_upload_dir_path = config.get('glob', 'image_upload_dir_path')

@@ -4,7 +4,7 @@ import os
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras.backend as K
-import util.detection_config as detection_config
+import util.config as config
 from sklearn.preprocessing import MinMaxScaler
 from matplotlib import pyplot
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
@@ -35,7 +35,7 @@ class FaceNetModel:
             coord = tf.train.Coordinator()
             threads = tf.compat.v1.train.start_queue_runners(coord=coord, sess=sess)
 
-            img_path_crop = detection_config.output_path_cropped_rectangle
+            img_path_crop = config.output_path_cropped_rectangle
             pig_img_folders = os.listdir(img_path_crop)
             for i, pig_name in enumerate(pig_img_folders):
                 ml_data.pig_dict[i] = pig_name
@@ -69,7 +69,7 @@ class FaceNetModel:
             coord = tf.train.Coordinator()
             threads = tf.compat.v1.train.start_queue_runners(coord=coord, sess=sess)
 
-            img_path_crop = detection_config.output_path_cropped_rectangle_test
+            img_path_crop = config.output_path_cropped_rectangle_test
             pig_img_folders = os.listdir(img_path_crop)
             for i, pig_name in enumerate(pig_img_folders):
                 ml_data.pig_dict[i] = pig_name

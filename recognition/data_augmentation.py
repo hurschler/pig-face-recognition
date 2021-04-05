@@ -8,7 +8,7 @@ from matplotlib import pyplot
 import cv2
 from PIL import Image as Pil_Image
 from util.preprocessing import Preprocessing
-import util.detection_config as detection_config
+import util.config as config
 import logging.config
 import util.logger_init
 import glob
@@ -27,7 +27,7 @@ class Augmentation:
 
 
     def clean_augmented_images(self):
-        img_path_crop = detection_config.output_path_cropped_rectangle
+        img_path_crop = config.output_path_cropped_rectangle
         pig_img_folders = os.listdir(img_path_crop)
         for i, pig_name in enumerate(pig_img_folders):
             img_path = os.path.join(img_path_crop, pig_name)
@@ -43,7 +43,7 @@ class Augmentation:
 
 
     def generate_sharp_img(self):
-        img_path_crop = detection_config.output_path_cropped_rectangle
+        img_path_crop = config.output_path_cropped_rectangle
         pig_img_folders = os.listdir(img_path_crop)
         for i, pig_name in enumerate(pig_img_folders):
             img_path = os.path.join(img_path_crop, pig_name)
@@ -66,7 +66,7 @@ class Augmentation:
         return (cv2.blur(img,(5,5)))
 
     def generate_augmentation_images(self):
-        img_path_crop = detection_config.output_path_cropped_rectangle
+        img_path_crop = config.output_path_cropped_rectangle
         pig_img_folders = os.listdir(img_path_crop)
         for i, pig_name in enumerate(pig_img_folders):
             img_path = os.path.join(img_path_crop, pig_name)

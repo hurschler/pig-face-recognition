@@ -8,7 +8,7 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import tensorflow.keras.backend as K
 import logging.config
 import util.logger_init
-import util.detection_config as detection_config
+import util.config as config
 import jsonpickle
 import recognition.ml_data
 
@@ -30,7 +30,7 @@ def load_train_dataset():
     train_datagen = ImageDataGenerator(
         horizontal_flip = True)
     train_generator = train_datagen.flow_from_directory(
-        detection_config.output_path_cropped_rectangle,
+        config.output_path_cropped_rectangle,
         batch_size=1,
         class_mode='binary')
     return train_generator
@@ -39,14 +39,14 @@ def load_train_dataset():
 def load_validate_dataset():
     validation_datagen = ImageDataGenerator(rescale=1./255)
     validation_generator = validation_datagen.flow_from_directory(
-        detection_config.output_path_cropped_rectangle_test,
+        config.output_path_cropped_rectangle_test,
         batch_size=1,
         class_mode='binary')
     return validation_generator
 
 
 def calculate_feature_vectors_train(efficientnet_face_model, ml_data):
-    img_path_crop = detection_config.output_path_cropped_rectangle
+    img_path_crop = config.output_path_cropped_rectangle
     pig_img_folders = os.listdir(img_path_crop)
     for i, pig_name in enumerate(pig_img_folders):
         ml_data.pig_dict[i] = pig_name
@@ -65,7 +65,7 @@ def calculate_feature_vectors_train(efficientnet_face_model, ml_data):
 
 
 def calculate_feature_vectors_test(efficientnet_face_model, ml_data):
-    img_path_crop = detection_config.output_path_cropped_rectangle_test
+    img_path_crop = config.output_path_cropped_rectangle_test
     pig_img_folders = os.listdir(img_path_crop)
     for i, pig_name in enumerate(pig_img_folders):
         ml_data.pig_dict[i] = pig_name

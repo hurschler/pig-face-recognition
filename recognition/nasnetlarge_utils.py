@@ -7,7 +7,7 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import tensorflow.keras.backend as K
 import logging.config
 import util.logger_init
-import util.detection_config as detection_config
+import util.config as config
 import jsonpickle
 
 
@@ -24,7 +24,7 @@ def load_ml_data_from_json_file(ml_data, file_full_name):
 
 
 def calculate_feature_vectors_train(nasnetlarge_model, ml_data):
-    img_path_crop = detection_config.output_path_cropped_rectangle
+    img_path_crop = config.output_path_cropped_rectangle
     pig_img_folders = os.listdir(img_path_crop)
     for i, pig_name in enumerate(pig_img_folders):
         ml_data.pig_dict[i] = pig_name
@@ -44,7 +44,7 @@ def calculate_feature_vectors_train(nasnetlarge_model, ml_data):
 
 
 def calculate_feature_vectors_test(nasnetlarge_model, ml_data):
-    img_path_crop = detection_config.output_path_cropped_rectangle_test
+    img_path_crop = config.output_path_cropped_rectangle_test
     pig_img_folders = os.listdir(img_path_crop)
     for i, pig_name in enumerate(pig_img_folders):
         ml_data.pig_dict[i] = pig_name

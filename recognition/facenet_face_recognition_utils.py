@@ -6,7 +6,6 @@ from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import tensorflow.keras.backend as K
 import logging.config
 import util.logger_init
-import util.detection_config as detection_config
 import jsonpickle
 import recognition.ml_data
 
