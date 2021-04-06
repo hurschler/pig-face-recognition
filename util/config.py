@@ -46,7 +46,7 @@ max_image_number = 2000
 # output_path_cropped_rectangle_test = r"G:\temp\pig-face-rectangle-test"
 output_path_cropped_rectangle_test = r"D:\Users\avatar\OneDrive - Hochschule Luzern\small_dataset\boundingbox\validate"
 # output_path_cropped_rectangle = r"G:\temp\pig-face-rectangle"
-output_path_cropped_rectangle = r"D:\Users\avatar\OneDrive - Hochschule Luzern\small_dataset\boundingbox\train"
+output_path_cropped_rectangle = config.get('glob', 'output_path_cropped_rectangle')
 
 
 
