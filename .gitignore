@@ -153,3 +153,6 @@ local.properties
 /input
 ~$train.xlsx
 util/saliency.ipynb
+/detection/images/*
+/detection/model/*
+/detection/logs/*
