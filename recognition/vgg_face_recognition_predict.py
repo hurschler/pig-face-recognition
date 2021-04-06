@@ -24,7 +24,7 @@ vgg_face_model = vgg_face_model.VggFaceModel()
 # vgg_face_model.remove_last_layer()
 # Prepare Data Structures
 ml_data = ml_data.MlData([],[],[],[], {})
-ml_data = rec_util.load_ml_data_from_json_file(ml_data, '../output/data.json')
+ml_data = rec_util.load_ml_data_from_json_file(ml_data)
 # Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)
 # classification_model = classification_auto_keras_model.ClassificationAutoKerasModel(ml_data)

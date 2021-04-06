@@ -40,11 +40,13 @@ output_path = r'/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-re
 
 image_sample_path = r'/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-recognition/sample'
 
-max_image_number = 10
+max_image_number = 2000
 
 # Recognition
-output_path_cropped_rectangle_test = r"G:\temp\pig-face-rectangle-test"
-output_path_cropped_rectangle = r"G:\temp\pig-face-rectangle"
+# output_path_cropped_rectangle_test = r"G:\temp\pig-face-rectangle-test"
+output_path_cropped_rectangle_test = r"D:\Users\avatar\OneDrive - Hochschule Luzern\small_dataset\boundingbox\validate"
+# output_path_cropped_rectangle = r"G:\temp\pig-face-rectangle"
+output_path_cropped_rectangle = r"D:\Users\avatar\OneDrive - Hochschule Luzern\small_dataset\boundingbox\train"
 
 
 
