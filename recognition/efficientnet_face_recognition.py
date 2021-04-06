@@ -5,6 +5,7 @@ import efficientnet_model
 import classification_model
 import efficientnet_face_recognition_utils as eff_util
 import ml_data
+from recognition import classification_auto_keras_model
 from util.preprocessing import Preprocessing
 from recognition.data_augmentation import Augmentation
 import logging.config
@@ -47,16 +48,17 @@ ml_data = ml_data.MlData([],[],[],[], {})
 # efficientnet_face_model.fit(train_generator, validation_generator)
 # efficientnet_face_model.fit(ml_data)
 
-# eff_util.calculate_feature_vectors_train(efficientnet_face_model, ml_data)
-#eff_util.calculate_feature_vectors_test(efficientnet_face_model, ml_data)
+eff_util.calculate_feature_vectors_train(efficientnet_face_model, ml_data)
+eff_util.calculate_feature_vectors_test(efficientnet_face_model, ml_data)
 
 
 # 8. convert all feature vectors to JSON File
-# eff_util.convert_to_json_and_save(ml_data)
+eff_util.convert_to_json_and_save(ml_data)
 ml_data = eff_util.load_ml_data_from_json_file(ml_data)
 
 # 9. Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)
+# classification_model = classification_auto_keras_model.ClassificationAutoKerasModel(ml_data)
 
 # 10. Train the Classification model with the embedding Datas
 classification_model.fit(ml_data)

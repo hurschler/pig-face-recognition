@@ -75,7 +75,6 @@ def calculate_feature_vectors_test(efficientnet_face_model, ml_data):
             img = load_img(os.path.join(img_path_crop, pig_name, image_name), target_size=(600, 600))
             img = img_to_array(img)
             img = np.expand_dims(img, axis=0)
-            tf.keras.applications.efficientnet.center_crop_and_resize()
             img = tf.keras.applications.efficientnet.preprocess_input(img)
             img_encode = efficientnet_face_model.efficientnet_face(img)
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()

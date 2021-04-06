@@ -46,7 +46,7 @@ class ClassificationModel(MlModel):
         classifier_model.add(Activation('tanh'))
         # classifier_model.add(Activation('relu'))
         classifier_model.add(Dropout(0.2))
-        classifier_model.add(Dense(units=50,kernel_initializer=kernel_init))
+        classifier_model.add(Dense(units=20,kernel_initializer=kernel_init))
         classifier_model.add(Activation('softmax'))
 
         optimizer = keras.optimizers.Nadam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
