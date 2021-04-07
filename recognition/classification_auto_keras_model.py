@@ -29,7 +29,7 @@ class ClassificationAutoKerasModel(MlModel):
 
     # Softmax regressor to classify images based on encoding
     def define_classification_model(self, x_train):
-        clf = ak.StructuredDataClassifier(overwrite=True, max_trials=10)
+        clf = ak.StructuredDataClassifier(overwrite=True, max_trials=5)
         return clf
 
     def fit(self, ml_data):
