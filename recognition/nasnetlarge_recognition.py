@@ -4,7 +4,7 @@ import classification_model
 import nasnetlarge_utils as nas_util
 import ml_data
 from util.preprocessing import Preprocessing
-from recognition.data_augmentation import Augmentation
+# from recognition.data_augmentation import Augmentation
 import logging.config
 import util.logger_init
 from keras.preprocessing import image
@@ -24,12 +24,12 @@ nasnetlarge_model = nasnetlarge_model.NasNetLarge()
 ml_data = ml_data.MlData([],[],[],[], {})
 
 # 7. Read Images from Disk and calculate the feature vector
-# nas_util.calculate_feature_vectors_train(nasnetlarge_model, ml_data)
-# nas_util.calculate_feature_vectors_test(nasnetlarge_model, ml_data)
+nas_util.calculate_feature_vectors_train(nasnetlarge_model, ml_data)
+nas_util.calculate_feature_vectors_test(nasnetlarge_model, ml_data)
 
 # 8. convert all feature vectors to JSON File
-# nas_util.convert_to_json_and_save(ml_data)
-ml_data = nas_util.load_ml_data_from_json_file(ml_data, '../output/data.json')
+nas_util.convert_to_json_and_save(ml_data)
+ml_data = nas_util.load_ml_data_from_json_file(ml_data)
 
 # 9. Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)

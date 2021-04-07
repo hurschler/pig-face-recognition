@@ -10,15 +10,17 @@ import util.logger_init
 import util.config as config
 import jsonpickle
 
+OUTPUT_DATA_NASNET_JSON = '../output/data-nasnet.json'
+
 
 def convert_to_json_and_save(ml_data):
     ml_data_json = jsonpickle.encode(ml_data)
-    with open('../output/data.json', "w") as fh:
+    with open(OUTPUT_DATA_NASNET_JSON, "w") as fh:
         fh.write(ml_data_json)
 
 
-def load_ml_data_from_json_file(ml_data, file_full_name):
-    with open(file_full_name, "r") as fh:
+def load_ml_data_from_json_file(ml_data):
+    with open(OUTPUT_DATA_NASNET_JSON, "r") as fh:
         ml_data = jsonpickle.loads(fh.read())
     return ml_data
 
