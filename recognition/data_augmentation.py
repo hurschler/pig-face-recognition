@@ -13,6 +13,7 @@ import logging.config
 import util.logger_init
 import glob
 import numpy as np
+import data_augmentation3
 
 from matplotlib import pyplot as plt
 
@@ -25,6 +26,9 @@ class Augmentation:
         self.log = logging.getLogger(__name__)
         self.log.info("init Augmentation")
 
+
+    def generate_albumentation(self):
+        data_augmentation3.generate_aug_images()
 
     def clean_augmented_images(self):
         img_path_crop = config.output_path_cropped_rectangle

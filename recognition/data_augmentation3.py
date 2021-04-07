@@ -103,7 +103,7 @@ def image_resize(image, width=None, height=None, inter=cv2.INTER_AREA):
     return resized
 
 
-# pig_img = cv2.imread(r'D:\Users\avatar\PycharmProjects\pig-face-recognition\sample\DSC_V1_6460_2238.JPG')
+# pig_img = cv2.imread(r'../sample/DSC_V1_6460_2238.JPG')
 # pig_img = cv2.cvtColor(pig_img, cv2.COLOR_BGR2RGB)
 # pig_img = image_resize(pig_img, height=416)
 
@@ -143,7 +143,7 @@ num = 0
 # plot_image(pig_img_aug6, 'clahe')
 # plot_image(pig_img_aug7, 'blur')
 
-generate_aug_images()
+# generate_aug_images()
 
 plt.axis('off')
 plt.tight_layout()
