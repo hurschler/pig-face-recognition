@@ -89,7 +89,7 @@ classification_model.load_model()
 # print ('prediction Schweinchen Index: ' + str(np.argmax(pred)))
 
 # 12. Predict
-img = eff_util.predict2(efficientnet_face_model, classification_model, ml_data, img_name_full_path)
+# img = eff_util.predict2(efficientnet_face_model, classification_model, ml_data, img_name_full_path)
 # img = eff_util.predict2(vgg_face_model, classification_model, ml_data, r"/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-recognition/data/validate/6357/DSC_V2_6357_2762.JPG-crop-mask0.jpg")
 # Visualize debug informations
 # vgg_face_model.debug_model(r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\train\DSC_V1_6460_2238.JPG")
