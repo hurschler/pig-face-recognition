@@ -7,6 +7,8 @@ from keras.preprocessing.image import ImageDataGenerator
 from matplotlib import pyplot
 import cv2
 from PIL import Image as Pil_Image
+from skimage.exposure import exposure
+
 from util.preprocessing import Preprocessing
 import util.config as config
 import logging.config
@@ -65,6 +67,24 @@ class Augmentation:
                 pil_img.save(os.path.join(img_path, aug_img_name))
             self.log.info("augmentation in process sharpness: " + str(i))
         self.log.info('augmentation finished (sharpness)')
+
+    def generate_contrast_img(self):
+        img_path_crop = config.output_path_cropped_rectangle
+        pig_img_folders = os.listdir(img_path_crop)
+        for i, pig_name in enumerate(pig_img_folders):
+            img_path = os.path.join(img_path_crop, pig_name)
+            image_names = glob.glob(os.path.join(img_path, 'DSC*'))
+            for image_name in image_names:
+                image_name = os.path.basename(image_name)
+                img_orig = load_img(os.path.join(img_path, image_name))
+                img_orig_opencv = np.array(img_orig)
+                p2, p98 = np.percentile(img_orig_opencv, (2, 98))
+                img_rescale = exposure.rescale_intensity(img_orig_opencv, in_range=(p2, p98))
+                pil_img = Pil_Image.fromarray(img_rescale)
+                aug_img_name = 'C-' + image_name
+                pil_img.save(os.path.join(img_path, aug_img_name))
+            self.log.info("augmentation in process sharpness: " + str(i))
+        self.log.info('augmentation finished (contrast)')
 
     def blur(img):
         return (cv2.blur(img,(5,5)))
