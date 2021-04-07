@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import vgg_face_model
+# import vgg_face_model
 import efficientnet_model
 import classification_model
 import efficientnet_face_recognition_utils as eff_util
@@ -13,9 +13,9 @@ import util.logger_init
 from keras.preprocessing import image
 
 
-log = logging.getLogger(__name__)
-log.info("Start efficientnet_face_recognition")
-log.info("Logger is initialized")
+#log = logging.getLogger(__name__)
+#log.info("Start efficientnet_face_recognition")
+#log.info("Logger is initialized")
 
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"
@@ -48,12 +48,12 @@ ml_data = ml_data.MlData([],[],[],[], {})
 # efficientnet_face_model.fit(train_generator, validation_generator)
 # efficientnet_face_model.fit(ml_data)
 
-eff_util.calculate_feature_vectors_train(efficientnet_face_model, ml_data)
-eff_util.calculate_feature_vectors_test(efficientnet_face_model, ml_data)
+# eff_util.calculate_feature_vectors_train(efficientnet_face_model, ml_data)
+# eff_util.calculate_feature_vectors_test(efficientnet_face_model, ml_data)
 
 
 # 8. convert all feature vectors to JSON File
-eff_util.convert_to_json_and_save(ml_data)
+# eff_util.convert_to_json_and_save(ml_data)
 ml_data = eff_util.load_ml_data_from_json_file(ml_data)
 
 # 9. Create a new Classification Model
@@ -71,7 +71,7 @@ classification_model.save_model()
 # efficientnet_face_model.load_model()
 classification_model.load_model()
 
-img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6472\DSC_V1_6472_2270.JPG-crop-mask0.jpg"
+# img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6472\DSC_V1_6472_2270.JPG-crop-mask0.jpg"
 
 # img_name_full_path = r"G:\temp\pig-face-22-03-2021-test\6501\DSC_V1_6501_2403.JPG-crop-mask0.jpg"
 
