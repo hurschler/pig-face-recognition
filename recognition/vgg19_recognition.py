@@ -54,6 +54,6 @@ img_name_full_path = r"G:\temp\pig-face-rectangle-test\6446\DSC_V2_6446_2774.JPG
 
 # 12. Predict
 # predict = vgg19_util.predict(vgg19_model, classification_model, ml_data, img_name_full_path)
-predict = vgg19_util.predict_validation_set(vgg19_model, classification_model, ml_data)
+# predict = vgg19_util.predict_validation_set(vgg19_model, classification_model, ml_data)
 
-confusion_matrix.create_confusion_matrix(predict, ml_data.y_test, ml_data.pig_dict, ml_data)
+# confusion_matrix.create_confusion_matrix(predict, ml_data.y_test, ml_data.pig_dict, ml_data)

@@ -1,21 +1,21 @@
 import os
 import numpy as np
-# import vgg_face_model
+import vgg_face_model
 import efficientnet_model
 import classification_model
 import efficientnet_face_recognition_utils as eff_util
 import ml_data
 from recognition import classification_auto_keras_model
 from util.preprocessing import Preprocessing
-from recognition.data_augmentation import Augmentation
+# from recognition.data_augmentation import Augmentation
 import logging.config
 import util.logger_init
 from keras.preprocessing import image
 
 
-#log = logging.getLogger(__name__)
-#log.info("Start efficientnet_face_recognition")
-#log.info("Logger is initialized")
+log = logging.getLogger(__name__)
+log.info("Start efficientnet_face_recognition")
+log.info("Logger is initialized")
 
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"

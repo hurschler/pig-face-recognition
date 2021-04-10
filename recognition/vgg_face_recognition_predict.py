@@ -40,7 +40,7 @@ classification_model.load_model()
 img_name_full_path = r"G:\temp\pig-face-rectangle-test\6385\DSC_V2_6385_2622.JPG-crop-mask0.jpg"
 
 
-img = rec_util.predict2(vgg_face_model, classification_model, ml_data, img_name_full_path)
+# img = rec_util.predict2(vgg_face_model, classification_model, ml_data, img_name_full_path)
 # Visualize debug informations
 # vgg_face_model.debug_model(r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label\train\DSC_V1_6460_2238.JPG")
 
