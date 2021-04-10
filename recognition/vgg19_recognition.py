@@ -24,7 +24,7 @@ vgg19_model = vgg19_model.Vgg19()
 # vgg19_model.remove_last_layer()
 
 # 6. Prepare Data Structures
-ml_data = ml_data.MlData([],[],[],[], {})
+ml_data = ml_data.MlData([], [], [], [], {})
 
 # 7. Read Images from Disk and calculate the feature vector
 # vgg19_util.calculate_feature_vectors_train(vgg19_model, ml_data)
@@ -50,7 +50,7 @@ classification_model.load_model()
 # img_name_full_path = r"G:\temp\pig-face-rectangle-test\6471\DSC_V1_6471_2479.JPG-crop-mask0.jpg"
 # img_name_full_path = r"G:\temp\pig-face-rectangle-test\6471\DSC_V1_6471_2479.JPG-crop-mask0.jpg"
 # img_name_full_path = r"G:\temp\pig-face-rectangle-test\6444\DSC_V2_6444_2568.JPG-crop-mask0.jpg"
-img_name_full_path = r"G:\temp\pig-face-rectangle-test\6446\DSC_V2_6446_2774.JPG-crop-mask0.jpg"
+# mg_name_full_path = r"G:\temp\pig-face-rectangle-test\6446\DSC_V2_6446_2774.JPG-crop-mask0.jpg"
 
 # 12. Predict
 # predict = vgg19_util.predict(vgg19_model, classification_model, ml_data, img_name_full_path)
