@@ -37,3 +37,4 @@ pandas~=1.2.3
 imutils~=0.5.4
 scikit-learn~=0.24.1
 autokeras~=1.0.12
+scikit-plot
