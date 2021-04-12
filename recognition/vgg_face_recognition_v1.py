@@ -55,7 +55,7 @@ classification_model.save_model()
 
 # 12. Predict
 # img_name_full_path = r"G:\temp\pig-face-rectangle-test\6446\DSC_V2_6446_2774.JPG-crop-mask0.jpg"
-img_name_full_path = r"G:\temp\pig-face-rectangle-test\6446\DSC_V2_6446_2775.JPG-crop-mask0.jpg"
+# img_name_full_path = r"G:\temp\pig-face-rectangle-test\6446\DSC_V2_6446_2775.JPG-crop-mask0.jpg"
 
-img = rec_util.predict2(vgg_face_model, classification_model, ml_data, img_name_full_path)
+# img = rec_util.predict2(vgg_face_model, classification_model, ml_data, img_name_full_path)
 
