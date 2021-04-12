@@ -32,7 +32,7 @@ class ClassificationModel(MlModel):
         self.file_writer_cm = tf.summary.create_file_writer(self.logdir + '/cm')
         self.checkpoint_path = '../model/face_model'
         self.log = logging.getLogger(__name__)
-        self.log.info("init Classification Model: " + __name__)
+        self.log.info("Init Classification Model: " + __name__)
         x_train = np.array(ml_data.x_train)
         self.model = self.define_classification_model(x_train)
         self.ml_data = ml_data
