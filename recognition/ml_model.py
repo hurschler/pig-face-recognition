@@ -7,9 +7,10 @@ from util.tensorboard_util import plot_confusion_matrix, plot_to_image
 from tensorflow.python.keras.callbacks_v1 import TensorBoard
 from keras import backend as K
 
+
 class MlModel:
 
-    def getModel(self):
+    def get_model(self):
         return self.model
 
     def summary_print(self):
