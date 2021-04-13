@@ -76,7 +76,7 @@ class ClassificationAutoKerasModel(MlModel):
 
         return name
 
-    def getModel(self):
+    def get_model(self):
         return self.model
 
     def summary_print(self):
