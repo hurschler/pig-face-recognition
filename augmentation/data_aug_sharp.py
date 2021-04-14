@@ -11,7 +11,7 @@ import util.config as config
 import logging.config
 import glob
 import numpy as np
-import data_augmentation3
+import data_aug_varia
 
 
 # based on https://machinelearningmastery.com/how-to-configure-image-data-augmentation-when-training-deep-learning-neural-networks/
@@ -23,7 +23,7 @@ class Augmentation:
         self.log.info("init Augmentation")
 
     def generate_albumentation(self):
-        data_augmentation3.generate_aug_images()
+        data_aug_varia.generate_aug_images()
 
     def generate_sharp_img(self):
         img_path_crop = config.output_path_cropped_rectangle

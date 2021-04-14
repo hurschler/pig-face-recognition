@@ -23,6 +23,7 @@ import util.logger_init
 
 log = logging.getLogger(__name__)
 
+
 # https://github.com/albumentations-team/albumentations#installation
 def generate_aug_images():
     img_path_crop = '/Users/patrickrichner/Desktop/FH/OneDrive - Hochschule Luzern/BDA2021/07_Daten/small_dataset/test/train'
