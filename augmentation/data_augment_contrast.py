@@ -41,7 +41,7 @@ def plot_img_and_hist(image, axes, bins=256):
 
 # Load an example image
 images = []
-img_path = '/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-recognition/sample'
+img_path = '/sample'
 image_name = 'DSC_V1_6460_2238.JPG'
 img_keras = load_img(os.path.join(img_path, image_name))
 img = np.array(img_keras)

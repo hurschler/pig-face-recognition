@@ -46,7 +46,7 @@ def generate_aug_images():
 
 
 def sobel_filters():
-    img_path = '/Users/patrickrichner/Desktop/FH/11.Semester/Bda2021/pig-face-recognition/sample'
+    img_path = '/sample'
     image_name = 'DSC_V1_6460_2238.JPG'
     img_keras = load_img(os.path.join(img_path, image_name))
     img = np.array(img_keras)
@@ -105,3 +105,52 @@ def visualize(imgs, format=None, gray=False):
 
 # generate_aug_images()
 sobel_filters()
+
+
+# pig_img = cv2.imread(r'../sample/DSC_V1_6460_2238.JPG')
+# pig_img = cv2.cvtColor(pig_img, cv2.COLOR_BGR2RGB)
+# pig_img = image_resize(pig_img, height=416)
+
+# alpha = 1.2
+# aug = RandomBrightnessContrast(p=1)
+# pig_img_aug1 = aug.apply(pig_img, alpha=alpha)
+
+# aug = RandomFog(p=1, fog_coef_lower=0.1, fog_coef_upper=0.1, alpha_coef=0.8)
+# pig_img_aug2 = aug.apply(pig_img)
+
+# aug = HueSaturationValue(hue_shift_limit=200, sat_shift_limit=70, val_shift_limit=27, p=1)
+# pig_img_aug3 = aug.apply(pig_img)
+
+# aug = ElasticTransform(alpha=203, sigma=25, alpha_affine=25, p=1.0)
+# pig_img_aug4 = aug.apply(pig_img)
+
+# aug = ToGray(p=0.5)
+# pig_img_aug5 = aug.apply(pig_img)
+
+# aug = CLAHE(p=1.0)
+# pig_img_aug6 = aug.apply(pig_img)
+
+# aug = Blur(p=0.5, blur_limit=7)
+# pig_img_aug7 = aug.apply(pig_img)
+
+# -----------------------------------------------------------------------------------------------------------
+plt.rcParams['figure.figsize'] = [16, 8]
+rows = 2
+num = 0
+
+# plot_image(pig_img, 'orig')
+# plot_image(pig_img_aug1, 'brightnessContrast')
+# plot_image(pig_img_aug2, 'fog')
+# plot_image(pig_img_aug3, 'hueSaturation')
+# plot_image(pig_img_aug4, 'elasticTransform')
+# plot_image(pig_img_aug5, 'toGray')
+# plot_image(pig_img_aug6, 'clahe')
+# plot_image(pig_img_aug7, 'blur')
+
+# generate_aug_images()
+
+plt.axis('off')
+plt.tight_layout()
+plt.show()
+
+# cv2.waitKey(0)
