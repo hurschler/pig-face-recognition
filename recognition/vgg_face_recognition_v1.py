@@ -4,10 +4,8 @@ import classification_model
 import vgg_face_recognition_utils_v1 as rec_util
 import ml_data
 from util.preprocessing import Preprocessing
-from recognition.data_augmentation import Augmentation
+from augmentation import Augmentation
 import logging.config
-import util.logger_init
-
 
 log = logging.getLogger(__name__)
 log.info("Start vgg_face_recognition_v1")
