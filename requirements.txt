@@ -1,5 +1,5 @@
 opencv-python~=4.5.1.48
-numpy==1.20.2
+numpy==1.19.2
 matplotlib==3.4.1
 tensorflow~=2.4.1
 jsonpickle~=2.0.0
