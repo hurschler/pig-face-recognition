@@ -1,16 +1,9 @@
 import os
-import numpy as np
 import resnet_model
 import classification_model
 import resnet_face_recognition_utils as res_util
 import ml_data
-from recognition import classification_auto_keras_model
-from util.preprocessing import Preprocessing
-from recognition.data_augmentation import Augmentation
 import logging.config
-import util.logger_init
-from keras.preprocessing import image
-
 
 log = logging.getLogger(__name__)
 log.info("Start efficientnet_face_recognition")
