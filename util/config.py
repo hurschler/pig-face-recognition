@@ -46,8 +46,6 @@ max_image_number = 2000
 output_path_cropped_rectangle_test = config.get('glob', 'output_path_cropped_rectangle_test')
 output_path_cropped_rectangle = config.get('glob', 'output_path_cropped_rectangle')
 
-
-
 # Detection
 output_dir_path = config.get('glob', 'output_dir_path')
 image_upload_dir_path = config.get('glob', 'image_upload_dir_path')
