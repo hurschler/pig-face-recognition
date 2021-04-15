@@ -73,7 +73,26 @@ def clean_augmented_images(path, pattern):
         log.warning('No files for this pattern ' + pattern + ' in the folders')
     for file in all_files:
         os.remove(file)
+    log.info('Removed ' + str(len(all_files)) + ' Elements')
     log.info('Finished deleting process')
+
+
+def counts_file_in_sub_folder_with_specific_pattern(path, pattern):
+    """
+       Counts all files in sub folders depending on the pattern.
+       @param:
+           - path : str Path of the to delete file in sub folders
+           - pattern: str Pattern of the file beginning
+       """
+    log.info('Start counting process of images with the pattern ' + pattern + '...')
+    all_files = [y
+                 for x in os.walk(path)
+                 for y in glob.glob(os.path.join(x[0], pattern))
+                 ]
+    log.info('Finished counting process - Total elements: ' + str(len(all_files)))
+    return len(all_files)
+
+
 
 
 
