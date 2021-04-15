@@ -15,6 +15,7 @@ class TestAugmentationUtil(TestCase):
 
     def test_save_aug_image(self):
         """Tests if the augmented image will be saved."""
+        self.log.info(config.test_images_only)
         for i, pig_name in enumerate(config.test_images_only):
             img_path = os.path.join(config.test_images_only, pig_name)
             image_names = glob.glob(os.path.join(img_path, 'DSC*'))
