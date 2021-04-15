@@ -11,7 +11,10 @@ log = logging.getLogger(__name__)
 
 
 def save_aug_image(image_name, img_path, pig_img_aug1, prefix):
-    """Saves the augmented image"""
+    """
+    Saves the augmented image
+
+    """
     log.info('Saving augmented image...')
     img_aug_opencv = np.array(pig_img_aug1)
     pil_img = Pil_Image.fromarray(img_aug_opencv)
