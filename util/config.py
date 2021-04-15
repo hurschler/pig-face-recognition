@@ -51,3 +51,6 @@ output_path_cropped_rectangle = config.get('glob', 'output_path_cropped_rectangl
 # Detection
 output_dir_path = config.get('glob', 'output_dir_path')
 image_upload_dir_path = config.get('glob', 'image_upload_dir_path')
+
+# Test
+test_image_folder = config.get('glob', 'test_image_folder')
