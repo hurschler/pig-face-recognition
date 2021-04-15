@@ -100,7 +100,3 @@ class TestAugmentationUtil(TestCase):
             'DSC_V1_6460_223*'
         )
         self.assertTrue(number_of_images_with_specific_pattern == 1)
-
-
-
-
