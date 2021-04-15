@@ -35,15 +35,12 @@ class TestAugmentationUtil(TestCase):
 
     def test_image_resize_height(self):
         """Tests if the height of a image will change with the resize function."""
-        for i, pig_name in enumerate(config.test_images_only):
-            img_path = os.path.join(config.test_images_only, pig_name)
-            image_names = glob.glob(os.path.join(img_path, 'DSC*'))
-            for image_name in image_names:
-                image_name = os.path.basename(image_name)
-                img_orig = cv2.imread(os.path.join(img_path, image_name))
-                height_origin = img_orig.shape[0]
-                resized_image = aug_util.resize(img_orig, height=224, width=224)
-                (height_new, _, _) = resized_image.shape
+        files = glob.glob(os.path.join(config.test_images_only, 'DSC*'), recursive=True)
+        for file_name in files:
+            img_orig = cv2.imread(file_name)
+            height_origin = img_orig.shape[0]
+            resized_image = aug_util.resize(img_orig, height=224, width=224)
+            (height_new, _, _) = resized_image.shape
         self.assertNotEqual(
             height_origin,
             height_new,
