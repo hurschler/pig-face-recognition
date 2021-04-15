@@ -18,7 +18,9 @@ class TestAugmentationUtil(TestCase):
         self.log.info(config.test_images_only)
         for i, pig_name in enumerate(config.test_images_only):
             img_path = os.path.join(config.test_images_only, pig_name)
+            self.log.info('Path: ' + img_path)
             image_names = glob.glob(os.path.join(img_path, 'DSC*'))
+            self.log.info(len(image_names))
             for image_name in image_names:
                 image_name = os.path.basename(image_name)
                 img_orig = cv2.imread(os.path.join(img_path, image_name))
