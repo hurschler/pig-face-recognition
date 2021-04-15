@@ -15,7 +15,6 @@ class TestAugmentationUtil(TestCase):
     def setUp(self):
         self.log = logging.getLogger(__name__)
 
-    # @unittest.skip("problem with local path / build server path")
     def test_save_aug_image(self):
         """Tests if the augmented image will be saved."""
         files = glob.glob(os.path.join(config.test_images_only, 'DSC*'), recursive=True)
@@ -33,6 +32,7 @@ class TestAugmentationUtil(TestCase):
             )
         test_file = glob.glob(os.path.join(config.test_images_only, 'GS-Test_Save-DSC_V1_6460_2238.JPG'), recursive=True)
         self.assertIsNotNone(test_file, 'Test file is not in folder')
+        aug_util.clean_augmented_images(path=config.test_images_only, pattern='GS-Test_Save-*')
 
     def test_image_resize_height(self):
         """Tests if the height of a image will change with the resize function."""
@@ -72,25 +72,26 @@ class TestAugmentationUtil(TestCase):
             'The width of the image is not 224px as expected. It is ' + str(width_new) + 'px'
         )
 
-    @unittest.skip("problem with local path / build server path")
     def test_clean_augmented_images(self):
-        for i, pig_name in enumerate(config.test_images_only):
-            img_path = os.path.join(config.test_images_only, pig_name)
-            image_names = glob.glob(os.path.join(img_path, 'DSC*'))
-            for image_name in image_names:
-                image_name = os.path.basename(image_name)
-                img_orig = cv2.imread(os.path.join(img_path, image_name))
-                img_orig = cv2.cvtColor(img_orig, cv2.COLOR_BGR2RGB)
-                alpha = 1.2
-                aug = RandomBrightnessContrast(p=1)
-                pig_img_aug1 = aug.apply(img_orig, alpha=alpha)
-                aug_util.save_aug_image(image_name, img_path, pig_img_aug1, 'GS-Test_Save-')
-        num_of_img_before = aug_util.counts_file_in_sub_folder_with_specific_pattern(config.test_images_only, 'GS-Test_Save-DSC*')
+        files = glob.glob(os.path.join(config.test_images_only, 'DSC*'), recursive=True)
+        for file in files:
+            img_orig = cv2.imread(file)
+            img_cv2 = cv2.cvtColor(img_orig, cv2.COLOR_BGR2RGB)
+            alpha = 1.2
+            aug = RandomBrightnessContrast(p=1)
+            img_aug = aug.apply(img_cv2, alpha=alpha)
+            aug_util.save_aug_image(
+                image_name='',
+                img_path=config.test_images_only,
+                pig_img_aug1=img_aug,
+                prefix='GS-Test_Save-DSC_V1_6460_2238.JPG'
+            )
+        files = glob.glob(os.path.join(config.test_images_only, 'GS-Test_Save-*'), recursive=True)
+        num_of_img_before = len(files)
+        self.assertTrue(num_of_img_before > 0, 'Test file is not in folder')
         aug_util.clean_augmented_images(config.test_images_only, 'GS-Test_Save-*')
-        num_of_img_after = aug_util.counts_file_in_sub_folder_with_specific_pattern(
-            config.test_images_only,
-            'GS-Test_Save-*'
-        )
+        files_after = glob.glob(os.path.join(config.test_images_only, 'GS-Test_Save-*'), recursive=True)
+        num_of_img_after = len(files_after)
         self.assertTrue(num_of_img_before > num_of_img_after)
 
     def test_counts_file_in_sub_folder_with_specific_pattern(self):
