@@ -15,8 +15,8 @@ class TestAugmentationUtil(TestCase):
 
     def test_save_aug_image(self):
         """Tests if the augmented image will be saved."""
-        for i, pig_name in enumerate(config.test_image_folder):
-            img_path = os.path.join(config.test_image_folder, pig_name)
+        for i, pig_name in enumerate(config.test_images_only):
+            img_path = os.path.join(config.test_images_only, pig_name)
             image_names = glob.glob(os.path.join(img_path, 'DSC*'))
             for image_name in image_names:
                 image_name = os.path.basename(image_name)
@@ -26,14 +26,14 @@ class TestAugmentationUtil(TestCase):
                 aug = RandomBrightnessContrast(p=1)
                 pig_img_aug1 = aug.apply(img_orig, alpha=alpha)
                 aug_util.save_aug_image(image_name, img_path, pig_img_aug1, 'GS-Test_Save-')
-        total_elements = aug_util.counts_file_in_sub_folder_with_specific_pattern(config.test_image_folder, 'GS-Test_Save-DSC*')
+        total_elements = aug_util.counts_file_in_sub_folder_with_specific_pattern(config.test_images_only, 'GS-Test_Save-DSC*')
         self.assertEqual(1, total_elements)
-        aug_util.clean_augmented_images(config.test_image_folder, 'GS-Test_Save-*')
+        aug_util.clean_augmented_images(config.test_images_only, 'GS-Test_Save-*')
 
     def test_image_resize_height(self):
         """Tests if the height of a image will change with the resize function."""
-        for i, pig_name in enumerate(config.test_image_folder):
-            img_path = os.path.join(config.test_image_folder, pig_name)
+        for i, pig_name in enumerate(config.test_images_only):
+            img_path = os.path.join(config.test_images_only, pig_name)
             image_names = glob.glob(os.path.join(img_path, 'DSC*'))
             for image_name in image_names:
                 image_name = os.path.basename(image_name)
@@ -54,8 +54,8 @@ class TestAugmentationUtil(TestCase):
 
     def test_image_resize_width(self):
         """Tests if the width of a image will change with the resize function."""
-        for i, pig_name in enumerate(config.test_image_folder):
-            img_path = os.path.join(config.test_image_folder, pig_name)
+        for i, pig_name in enumerate(config.test_images_only):
+            img_path = os.path.join(config.test_images_only, pig_name)
             image_names = glob.glob(os.path.join(img_path, 'DSC*'))
             for image_name in image_names:
                 image_name = os.path.basename(image_name)
@@ -75,8 +75,8 @@ class TestAugmentationUtil(TestCase):
         )
 
     def test_clean_augmented_images(self):
-        for i, pig_name in enumerate(config.test_image_folder):
-            img_path = os.path.join(config.test_image_folder, pig_name)
+        for i, pig_name in enumerate(config.test_images_only):
+            img_path = os.path.join(config.test_images_only, pig_name)
             image_names = glob.glob(os.path.join(img_path, 'DSC*'))
             for image_name in image_names:
                 image_name = os.path.basename(image_name)
@@ -86,17 +86,17 @@ class TestAugmentationUtil(TestCase):
                 aug = RandomBrightnessContrast(p=1)
                 pig_img_aug1 = aug.apply(img_orig, alpha=alpha)
                 aug_util.save_aug_image(image_name, img_path, pig_img_aug1, 'GS-Test_Save-')
-        num_of_img_before = aug_util.counts_file_in_sub_folder_with_specific_pattern(config.test_image_folder, 'GS-Test_Save-DSC*')
-        aug_util.clean_augmented_images(config.test_image_folder, 'GS-Test_Save-*')
+        num_of_img_before = aug_util.counts_file_in_sub_folder_with_specific_pattern(config.test_images_only, 'GS-Test_Save-DSC*')
+        aug_util.clean_augmented_images(config.test_images_only, 'GS-Test_Save-*')
         num_of_img_after = aug_util.counts_file_in_sub_folder_with_specific_pattern(
-            config.test_image_folder,
+            config.test_images_only,
             'GS-Test_Save-*'
         )
         self.assertTrue(num_of_img_before > num_of_img_after)
 
     def test_counts_file_in_sub_folder_with_specific_pattern(self):
         number_of_images_with_specific_pattern = aug_util.counts_file_in_sub_folder_with_specific_pattern(
-            config.test_image_folder,
+            config.test_images_only,
             'DSC_V1_6460_223*'
         )
         self.assertTrue(number_of_images_with_specific_pattern == 1)
