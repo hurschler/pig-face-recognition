@@ -26,17 +26,17 @@ def generate_aug_images_gray_scale(path=PATH_TO_IMAGES):
             image_name = os.path.basename(image_name)
             img_orig = cv2.imread(os.path.join(img_path, image_name))
             img_orig = cv2.cvtColor(img_orig, cv2.COLOR_BGR2RGB)
-
             aug = ToGray(p=0.5)
             pig_img_aug3 = aug.apply(img_orig)
             save_aug_image(image_name, img_path, pig_img_aug3, 'GS-')
-        log.info('augmentation in process GS: ' + str(i))
-    log.info('Augmentation is finished')
+        log.info('Augmentation in process GS: ' + str(i))
+    log.info('Augmentation process is finished')
 
 # -----------------------------------------------------------------------------------------------------------
 
 
 # generate_aug_images_gray_scale()
 aug_util.clean_augmented_images(path=PATH_TO_IMAGES, pattern='GS*')
+aug_util.counts_file_in_sub_folder_with_specific_pattern(path=PATH_TO_IMAGES, pattern='DSC*')
 
 
