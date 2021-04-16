@@ -9,7 +9,7 @@ from unittest import TestCase
 import recognition.vgg_face_recognition_utils_v1 as vgg_face_utils
 from recognition.ml_data import MlData
 
-PATH_JSON_DATA = '../test_images_only/test-efficient-net-b7.json'
+PATH_JSON_DATA = config.test_json
 
 
 class TestPreprocessing(TestCase):

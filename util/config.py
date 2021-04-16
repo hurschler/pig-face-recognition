@@ -52,3 +52,5 @@ image_upload_dir_path = config.get('glob', 'image_upload_dir_path')
 
 # Test
 test_images_only = config.get('glob', 'test_images_only')
+test_json = config.get('glob', 'test_json')
+
