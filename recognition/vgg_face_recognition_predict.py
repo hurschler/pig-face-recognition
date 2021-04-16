@@ -16,6 +16,9 @@ log.info("Start predection")
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
+PATH_JSON_DATA = '../output/data-vgg16.json'
+
+
 # Create a new VGG Face model
 vgg_face_model = vgg_face_model.VggFaceModel()
 # Load Weights for the VGG Model
@@ -24,7 +27,7 @@ vgg_face_model = vgg_face_model.VggFaceModel()
 # vgg_face_model.remove_last_layer()
 # Prepare Data Structures
 ml_data = ml_data.MlData([],[],[],[], {})
-ml_data = rec_util.load_ml_data_from_json_file(ml_data)
+ml_data = rec_util.load_ml_data_from_json_file(ml_data, json_data=PATH_JSON_DATA)
 # Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)
 # classification_model = classification_auto_keras_model.ClassificationAutoKerasModel(ml_data)
@@ -37,7 +40,7 @@ classification_model.load_model()
 # Predict
 
 # img_name_full_path = r"G:\temp\pig-face-rectangle-test\6460\DSC_V1_6460_2239.JPG-crop-mask0.jpg"
-img_name_full_path = r"G:\temp\pig-face-rectangle-test\6385\DSC_V2_6385_2622.JPG-crop-mask0.jpg"
+# img_name_full_path = r"G:\temp\pig-face-rectangle-test\6385\DSC_V2_6385_2622.JPG-crop-mask0.jpg"
 
 
 # img = rec_util.predict2(vgg_face_model, classification_model, ml_data, img_name_full_path)

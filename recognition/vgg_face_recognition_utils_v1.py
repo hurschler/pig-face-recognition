@@ -19,7 +19,6 @@ import jsonpickle
 
 import recognition.ml_data
 
-json_data_file = '../output/data-vgg16.json'
 
 def read_pig_images_from_disk(vgg_face_model, ml_data):
     # Prepare Train Data
@@ -40,14 +39,14 @@ def read_pig_images_from_disk(vgg_face_model, ml_data):
             rec_util.test_data(vgg_face_model, ml_data, i, path, pig_name)
 
 
-def convert_to_json_and_save(ml_data):
+def convert_to_json_and_save(ml_data, json_data):
     ml_data_json = jsonpickle.encode(ml_data)
-    with open(json_data_file, "w") as fh:
+    with open(json_data, "w") as fh:
         fh.write(ml_data_json)
 
 
-def load_ml_data_from_json_file(ml_data):
-    with open(json_data_file, "r") as fh:
+def load_ml_data_from_json_file(ml_data, json_data):
+    with open(json_data, "r") as fh:
         ml_data = jsonpickle.loads(fh.read())
     return ml_data
 

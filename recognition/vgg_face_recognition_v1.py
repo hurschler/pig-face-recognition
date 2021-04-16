@@ -4,7 +4,6 @@ import classification_model
 import vgg_face_recognition_utils_v1 as rec_util
 import ml_data
 from util.preprocessing import Preprocessing
-from augmentation import Augmentation
 import logging.config
 
 log = logging.getLogger(__name__)
@@ -18,7 +17,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 pre = Preprocessing()
 
 # 2. Image Augmentation
-aug = Augmentation()
+# aug = Augmentation()
 # aug.clean_augmented_images()
 # aug.generate_augmentation_images()
 # aug.generate_sharp_img()

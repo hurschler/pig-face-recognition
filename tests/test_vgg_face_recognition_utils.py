@@ -9,15 +9,19 @@ from unittest import TestCase
 import recognition.vgg_face_recognition_utils_v1 as vgg_face_utils
 from recognition.ml_data import MlData
 
+PATH_JSON_DATA = '../test_images_only/test-efficient-net-b7.json'
+
+
 class TestPreprocessing(TestCase):
 
     def setUp(self):
         self.ml_data = MlData([],[],[],[], {})
 
-    @unittest.skip("problem with local path / build server path")
-    def test_serialze_ml_data(self):
+    def test_serialize_ml_data(self):
         ml_data = self.ml_data
-        ml_data = vgg_face_utils.load_ml_data_from_json_file(ml_data, '../recognition/data.json')
-        print(ml_data)
-        self.assertIsNotNone(ml_data,'ML_Data is None')
+        ml_data = vgg_face_utils.load_ml_data_from_json_file(
+            ml_data,
+            json_data=PATH_JSON_DATA
+        )
+        self.assertIsNotNone(ml_data, 'ML_Data is None')
 
