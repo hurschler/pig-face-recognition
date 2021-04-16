@@ -8,7 +8,6 @@ build_property_file = '/home/runner/work/pig-face-recognition/pig-face-recogniti
 def read_config(cfg_files):
     if(cfg_files != None):
         config = configparser.RawConfigParser()
-
         # merges all files into a single config
         for i, cfg_file in enumerate(cfg_files):
             if(os.path.exists(cfg_file)):
@@ -17,7 +16,6 @@ def read_config(cfg_files):
                     break
                 if(os.path.exists(cfg_file)):
                     config.read(cfg_file)
-
         return config
 
 image_root_dir_path = r"D:\Users\avatar\OneDrive - Hochschule Luzern\bearbeitet_mit_label"

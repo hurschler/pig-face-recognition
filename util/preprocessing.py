@@ -29,10 +29,10 @@ class Preprocessing(object):
         return image
 
     def replaceColor(self, img_opencv, r, g, b):
-        lower_black = np.array([r,g,b], dtype = "uint16")
-        upper_black = np.array([r,g,b], dtype = "uint16")
+        lower_black = np.array([r, g, b], dtype="uint16")
+        upper_black = np.array([r, g, b], dtype="uint16")
         black_mask = cv2.inRange(img_opencv, lower_black, upper_black)
-        img_opencv[np.where((img_opencv == [b,g,r]).all(axis = 2))] = [0,0,0]
+        img_opencv[np.where((img_opencv == [b, g, r]).all(axis=2))] = [0, 0, 0]
         return img_opencv
 
     def replaceColorBlueWithBlack(self, img_opencv):
