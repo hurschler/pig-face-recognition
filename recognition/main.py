@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     def case_1():
         global PATH_FEATURE_VECTOR
-        PATH_FEATURE_VECTOR = './feature_vector/efficient-net-b7.json'
+        PATH_FEATURE_VECTOR = '../feature_vector/efficient-net-b7.json'
         log.info('Path for feature vector: ' + PATH_FEATURE_VECTOR)
         return PATH_FEATURE_VECTOR
 
