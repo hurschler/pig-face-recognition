@@ -81,7 +81,7 @@ def predict2(resnet_face_model, classification_model, ml_data, img_name):
         img_encode = resnet_face_model.get_embeddings(img_name)
         # Make Predictions
         print ('pig_name: ', img_name, 'length of Feature-Vector: ', len(img_encode), ' Feature-Vector: ', img_encode)
-        name = classification_model.predict2(img_encode, 0,0,width, height, ml_data.pig_dict, img_pil)
+        name = classification_model.predict(img_encode, 0, 0, width, height, ml_data.pig_dict, img_pil)
         persons_in_img.append(name)
         # Save images with bounding box,name and accuracy
         img_opencv = np.array(img_pil)

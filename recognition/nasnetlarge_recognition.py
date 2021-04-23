@@ -18,27 +18,27 @@ os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
 # 3. Create a new VGG Face model
-nasnetlarge_model = nasnetlarge_model.NasNetLarge()
+nasnet_model = nasnetlarge_model.NasNetLarge()
 
 # 6. Prepare Data Structures
 ml_data = ml_data.MlData([],[],[],[], {})
 
 # 7. Read Images from Disk and calculate the feature vector
-nas_util.calculate_feature_vectors_train(nasnetlarge_model, ml_data)
-nas_util.calculate_feature_vectors_test(nasnetlarge_model, ml_data)
+# nas_util.calculate_feature_vectors_train(nasnet_model, ml_data)
+# nas_util.calculate_feature_vectors_test(nasnet_model, ml_data)
 
 # 8. convert all feature vectors to JSON File
-nas_util.convert_to_json_and_save(ml_data)
+# nas_util.convert_to_json_and_save(ml_data)
 ml_data = nas_util.load_ml_data_from_json_file(ml_data)
 
 # 9. Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)
 
 # 10. Train the Classification model with the embedding Datas
-# classification_model.fit(ml_data)
+classification_model.fit(ml_data)
 
 # 11. Export the Model
-# classification_model.save_model()
+classification_model.save_model()
 # efficientnet_face_model.save_model()
 
 # Load the Model from a file
@@ -49,4 +49,4 @@ classification_model.load_model()
 img_name_full_path = r"G:\temp\pig-face-rectangle-test\6471\DSC_V1_6471_2479.JPG-crop-mask0.jpg"
 
 # 12. Predict
-img = nas_util.predict2(nasnetlarge_model, classification_model, ml_data, img_name_full_path)
+# img = nas_util.predict2(nasnetlarge_model, classification_model, ml_data, img_name_full_path)

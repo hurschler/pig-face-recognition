@@ -81,7 +81,7 @@ def predict2(resnet_face_model, classification_model, ml_data, img_name):
         img_encode = resnet_face_model.get_embeddings(img_name)
         # Make Predictions
         print ('pig_name: ', img_name, 'length of Feature-Vector: ', len(img_encode), ' Feature-Vector: ', img_encode)
-        name = classification_model.predict2(img_encode, 0,0,width, height, ml_data.pig_dict, img_pil)
+        name = classification_model.predict(img_encode, 0, 0, width, height, ml_data.pig_dict, img_pil)
         persons_in_img.append(name)
         # Save images with bounding box,name and accuracy
         img_opencv = np.array(img_pil)
@@ -98,7 +98,7 @@ def load_train_dataset():
         config.output_path_cropped_rectangle,
         target_size=(224, 224),
         # classes = class_names,
-        batch_size=15,
+        batch_size=25,
         class_mode='categorical'
     )
     return train_generator
@@ -110,7 +110,7 @@ def load_validate_dataset():
         config.output_path_cropped_rectangle_test,
         target_size=(224, 224),
         # classes = class_names,
-        batch_size=5,
+        batch_size=1,
         class_mode='categorical'
     )
     return validation_generator

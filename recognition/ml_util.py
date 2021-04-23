@@ -14,19 +14,25 @@ import recognition.ml_data
 
 log = logging.getLogger(__name__)
 
+FEATURE_VECTOR_PATH = './feature_vector/'
 
-def convert_to_json_and_save(ml_data, path):
+
+def convert_to_json_and_save(ml_data, feature_extraction_model):
     """Converts the data to a json file"""
     log.info('Converting data to json...')
+    feature_vector_name = feature_extraction_model.get_feature_vector_name()
+    path = os.path.join(FEATURE_VECTOR_PATH, feature_vector_name)
     ml_data_json = jsonpickle.encode(ml_data)
     log.info('Path for saving feature vector: ' + path)
     with open(path, "w") as fh:
         fh.write(ml_data_json)
 
 
-def load_ml_data_from_json_file(ml_data, path):
+def load_ml_data_from_json_file(ml_data, feature_extraction_model):
     """Loads the Data from the json file"""
     log.info('Loading Data from json file...')
+    feature_vector_name = feature_extraction_model.get_feature_vector_name()
+    path = os.path.join(FEATURE_VECTOR_PATH, feature_vector_name)
     log.info('Path for loading feature vector: ' + path)
     with open(path, "r") as fh:
         ml_data = jsonpickle.loads(fh.read())
@@ -56,7 +62,7 @@ def load_validate_dataset():
     return validation_generator
 
 
-def calculate_feature_vectors_train(efficientnet_face_model, ml_data):
+def calculate_feature_vectors_train(feature_extractor_model, ml_data):
     """Calculates the feature vector of the train data set
     @Params:
     - class_model: specific class model of the algorithm
@@ -71,11 +77,11 @@ def calculate_feature_vectors_train(efficientnet_face_model, ml_data):
         ml_data.pig_dict[i] = pig_name
         image_names = os.listdir(os.path.join(img_path_crop, pig_name))
         for image_name in image_names:
-            img = load_img(os.path.join(img_path_crop, pig_name, image_name), target_size=(600, 600))
+            img = load_img(os.path.join(img_path_crop, pig_name, image_name), target_size=feature_extractor_model.get_target_size())
             img = img_to_array(img)
             img = np.expand_dims(img, axis=0)
-            img = tf.keras.applications.efficientnet.preprocess_input(img)
-            img_encode = efficientnet_face_model.efficient_net_face(img)
+            img = feature_extractor_model.preprocessing_input(img)
+            img_encode = feature_extractor_model.get_embeddings(img)
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()
             ml_data.x_train.append(feature_vector)
             ml_data.y_train.append(i)
@@ -130,7 +136,7 @@ def predict2(efficientnet_face_model, classification_model, ml_data, img_name):
         img_encode = efficientnet_face_model.get_embeddings(img_name)
         # Make Predictions
         print('pig_name: ', img_name, 'length of Feature-Vector: ', len(img_encode), ' Feature-Vector: ', img_encode)
-        name = classification_model.predict2(img_encode, 0,0,width, height, ml_data.pig_dict, img_pil)
+        name = classification_model.predict(img_encode, 0, 0, width, height, ml_data.pig_dict, img_pil)
         persons_in_img.append(name)
         # Save images with bounding box,name and accuracy
         img_opencv = np.array(img_pil)

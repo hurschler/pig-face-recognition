@@ -20,7 +20,10 @@ from tensorflow.keras.models import Sequential, Model
 
 
 # https://www.analyticsvidhya.com/blog/2020/08/top-4-pre-trained-models-for-image-classification-with-python-code/
-class EfficientNetModel:
+from recognition.feature_extraction_model import FeatureExtractionModel
+
+
+class EfficientNetModel(FeatureExtractionModel):
     """
     Wrapper Class around Keras Model
     It defines the EfficientNetB7
@@ -103,16 +106,7 @@ class EfficientNetModel:
         self.log.info('Saving weights...')
         self.model.save_weights('../model/efficient_net_b7.h5')
 
-    def get_embeddings(self, crop_img_name):
-        """Returns the embeddings"""
-        self.log.info('Getting embeddings...')
-        crop_img = load_img(crop_img_name, target_size=(600, 600))
-        crop_img = img_to_array(crop_img)
-        crop_img = np.expand_dims(crop_img, axis=0)
-        crop_img = preprocess_input(crop_img)
-        return self.model(crop_img)
-
-    def efficient_net_face(self, img):
+    def get_embeddings(self, img):
         """Returns model efficient_net with loaded image"""
         self.log.info('Getting model...')
         return self.model(img)

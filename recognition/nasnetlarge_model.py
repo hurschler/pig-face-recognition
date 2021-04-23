@@ -86,5 +86,5 @@ class NasNetLarge:
         crop_img = preprocess_input(crop_img)
         return self.model(crop_img)
 
-    def efficientnet_face(self, img):
+    def nasnet_model(self, img):
         return self.model(img)

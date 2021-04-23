@@ -1,28 +1,14 @@
-from random import random
-
 import tensorflow as tf
 import logging.config
-import datetime
-from tensorflow.python.keras.applications.efficientnet import EfficientNetB0, EfficientNetB7
-from tensorflow.python.keras.callbacks_v1 import TensorBoard
-from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from tensorflow.keras import layers
-from tensorflow.python.ops.init_ops_v2 import glorot_uniform
-from tensorflow.keras.layers import ZeroPadding2D, Convolution2D, MaxPooling2D
-from tensorflow.keras.layers import Dense, Dropout, Softmax, Flatten, Activation, BatchNormalization
-import os
-import numpy as np
-from matplotlib import pyplot
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-from tensorflow.keras.applications.imagenet_utils import preprocess_input
 import logging.config
 import util.logger_init
-import util.logger_init
+from recognition.feature_extraction_model import FeatureExtractionModel
 
 
 # Wrapper Class around Keras Model
-class Vgg19:
+class Vgg19(FeatureExtractionModel):
 
     def __init__(self):
         self.log = logging.getLogger(__name__)
@@ -30,6 +16,10 @@ class Vgg19:
         self.height = 448
         self.width = 448
         self.model = self.define_model()
+
+    def preprocessing_input(self, image):
+        self.log.info('Start preprocessing Vgg19...')
+        return tf.keras.applications.vgg19.preprocess_input(image)
 
     def define_model(self):
         inputs = layers.Input(shape=(self.width, self.height, 3))
@@ -54,22 +44,21 @@ class Vgg19:
     def getModel(self):
         return self.model
 
-    def get_embeddings(self, crop_img_name):
-        # Get Embeddings
-        crop_img = load_img(crop_img_name, target_size=(self.width, self.height))
-        crop_img = img_to_array(crop_img)
-        crop_img = np.expand_dims(crop_img, axis=0)
-        crop_img = preprocess_input(crop_img)
-        return self.model(crop_img)
-
-    def getEmbeddings(self, img):
+    def get_embeddings(self, img):
         return self.model(img)
+
+    def get_target_size(self):
+        return 448, 448
 
     def getWidth(self):
         return self.width
 
     def getHeight(self):
         return self.height
+
+    def get_feature_vector_name(self):
+        return 'data-vgg19.json'
+
 
     def remove_last_layer(self):
         # Remove Last Softmax layer and get model upto last flatten layer with outputs 2622 units

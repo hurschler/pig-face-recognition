@@ -25,7 +25,7 @@ def load_ml_data_from_json_file(ml_data):
     return ml_data
 
 
-def calculate_feature_vectors_train(nasnetlarge_model, ml_data):
+def calculate_feature_vectors_train(nasnet_model, ml_data):
     img_path_crop = config.output_path_cropped_rectangle
     pig_img_folders = os.listdir(img_path_crop)
     for i, pig_name in enumerate(pig_img_folders):
@@ -38,7 +38,7 @@ def calculate_feature_vectors_train(nasnetlarge_model, ml_data):
             img = np.expand_dims(img, axis=0)
             img = tf.keras.applications.nasnet.preprocess_input(img)
             # img = preprocess_input(img)
-            img_encode = nasnetlarge_model.efficient_net_face(img)
+            img_encode = nasnet_model.nasnet_model(img)
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()
             ml_data.x_train.append(feature_vector)
             ml_data.y_train.append(i)
@@ -58,7 +58,7 @@ def calculate_feature_vectors_test(nasnetlarge_model, ml_data):
             img = np.expand_dims(img, axis=0)
             img = tf.keras.applications.nasnet.preprocess_input(img)
             # img = preprocess_input(img)
-            img_encode = nasnetlarge_model.efficient_net_face(img)
+            img_encode = nasnetlarge_model.nasnet_model(img)
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()
             ml_data.x_test.append(feature_vector)
             ml_data.y_test.append(i)
@@ -85,7 +85,7 @@ def predict2(efficientnet_face_model, classification_model, ml_data, img_name):
         img_encode = efficientnet_face_model.get_embeddings(img_name)
         # Make Predictions
         print ('pig_name: ', img_name, 'length of Feature-Vector: ', len(img_encode), ' Feature-Vector: ', img_encode)
-        name = classification_model.predict2(img_encode, 0,0,width, height, ml_data.pig_dict, img_pil)
+        name = classification_model.predict(img_encode, 0, 0, width, height, ml_data.pig_dict, img_pil)
         persons_in_img.append(name)
         # Save images with bounding box,name and accuracy
         img_opencv = np.array(img_pil)

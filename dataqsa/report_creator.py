@@ -24,6 +24,8 @@ class ReportCreator():
         self.log.info("init ReportCreator")
         self.excel_file_path_full_name = '../sample/train.xlsx'
         self.df = None
+        pd.set_option('display.max_columns', None)
+        pd.set_option('display.max_rows', None)
         # self.readExcelToPanda()
         # self.build_image_dictionary()
 
@@ -135,12 +137,14 @@ class ReportCreator():
 
 
     def mergeRows(self):
-        # Todo implement
+        for i in range(0, len(self.df)):
+            print(self.df.iloc[i]['image_name'], self.df.iloc[i]['type'])
         return
 
 
 report_creator = ReportCreator()
 report_creator.readExcelToPanda()
-report_creator.build_image_dictionary()
-report_creator.writePandaToExcel()
+report_creator.mergeRows()
+# report_creator.build_image_dictionary()
+# report_creator.writePandaToExcel()
 

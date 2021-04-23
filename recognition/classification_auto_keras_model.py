@@ -32,7 +32,7 @@ class ClassificationAutoKerasModel(MlModel):
         clf = ak.StructuredDataClassifier(overwrite=True, max_trials=5)
         return clf
 
-    def fit(self, ml_data):
+    def fit(self, ml_data, batch_size, epochs):
         x_train = np.array(ml_data.x_train)
         y_train = np.array(ml_data.y_train)
         x_test = np.array(ml_data.x_test)

@@ -35,11 +35,12 @@ vgg_face_model.remove_last_layer()
 ml_data = ml_data.MlData([],[],[],[], {})
 
 # 7. Read Images from Disk and calculate the feature vector
-rec_util.calculate_feature_vectors_train(vgg_face_model, ml_data)
-rec_util.calculate_feature_vectors_test(vgg_face_model, ml_data)
+# rec_util.calculate_feature_vectors_train(vgg_face_model, ml_data)
+# rec_util.calculate_feature_vectors_test(vgg_face_model, ml_data)
 
 # 8. convert all feature vectors to JSON File
-rec_util.convert_to_json_and_save(ml_data)
+# rec_util.convert_to_json_and_save(ml_data)
+ml_data = rec_util.load_ml_data_from_json_file(ml_data)
 
 # 9. Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)

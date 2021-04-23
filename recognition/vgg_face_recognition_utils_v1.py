@@ -19,6 +19,7 @@ import jsonpickle
 
 import recognition.ml_data
 
+json_file_full_name = '../output/data-vgg16.json'
 
 def read_pig_images_from_disk(vgg_face_model, ml_data):
     # Prepare Train Data
@@ -39,14 +40,14 @@ def read_pig_images_from_disk(vgg_face_model, ml_data):
             rec_util.test_data(vgg_face_model, ml_data, i, path, pig_name)
 
 
-def convert_to_json_and_save(ml_data, json_data):
+def convert_to_json_and_save(ml_data):
     ml_data_json = jsonpickle.encode(ml_data)
-    with open(json_data, "w") as fh:
+    with open(json_file_full_name, "w") as fh:
         fh.write(ml_data_json)
 
 
-def load_ml_data_from_json_file(ml_data, json_data):
-    with open(json_data, "r") as fh:
+def load_ml_data_from_json_file(ml_data):
+    with open(json_file_full_name, "r") as fh:
         ml_data = jsonpickle.loads(fh.read())
     return ml_data
 
@@ -125,7 +126,7 @@ def predict2(vgg_face_model, classification_model, ml_data, img_name):
         # Make Predictions
 
         print ('pig_name: ', img_name, 'length of Feature-Vector: ', len(img_encode), ' Feature-Vector: ', img_encode)
-        name = classification_model.predict2(img_encode, 0,0,width, height, ml_data.pig_dict, img_pil)
+        name = classification_model.predict(img_encode, 0, 0, width, height, ml_data.pig_dict, img_pil)
         persons_in_img.append(name)
         # Save images with bounding box,name and accuracy
         img_opencv = np.array(img_pil)

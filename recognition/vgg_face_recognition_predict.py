@@ -16,9 +16,6 @@ log.info("Start predection")
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 
-PATH_JSON_DATA = '../output/data-vgg16.json'
-
-
 # Create a new VGG Face model
 vgg_face_model = vgg_face_model.VggFaceModel()
 # Load Weights for the VGG Model
@@ -27,7 +24,7 @@ vgg_face_model = vgg_face_model.VggFaceModel()
 # vgg_face_model.remove_last_layer()
 # Prepare Data Structures
 ml_data = ml_data.MlData([],[],[],[], {})
-ml_data = rec_util.load_ml_data_from_json_file(ml_data, json_data=PATH_JSON_DATA)
+ml_data = rec_util.load_ml_data_from_json_file(ml_data)
 # Create a new Classification Model
 classification_model = classification_model.ClassificationModel(ml_data)
 # classification_model = classification_auto_keras_model.ClassificationAutoKerasModel(ml_data)

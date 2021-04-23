@@ -26,39 +26,29 @@ from util.tensorboard_util import plot_confusion_matrix, plot_to_image
 
 
 class ClassificationModel(MlModel):
-    """
-    Classifies the images depending on the encoding and the ML-model
-    @params:
-        - MlModel: Shows the Overview of the used model with all parameter
-    """
 
-    def __init__(self, ml_data):
+    def __init__(self, ml_data, number_of_pigs):
         self.logdir = "../logs/recognition/logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         self.file_writer_cm = tf.summary.create_file_writer(self.logdir + '/cm')
         self.checkpoint_path = '../model/face_model'
         self.log = logging.getLogger(__name__)
         self.log.info("Init Classification Model: " + __name__)
         x_train = np.array(ml_data.x_train)
-        self.model = self.define_classification_model(x_train)
+        self.model = self.define_classification_model(x_train, number_of_pigs)
         self.ml_data = ml_data
 
-    def define_classification_model(self, x_train):
-        """
-        Softmax regressor to classify images based on encoding
-        @Params:
-            - x_train: Training Data
-        """
-        self.log.info('Defining classification model...')
-        # stabile 0.375 - 0.4 auf vgg16 (lecun_normal)
+    def define_classification_model(self, x_train, number_of_pigs):
+        """Softmax regressor to classify images based on encoding"""
         kernel_init = keras.initializers.lecun_normal()
         classifier_model = Sequential()
-
-        classifier_model.add(Dense(
-            units=32,
-            kernel_regularizer=keras.regularizers.l1_l2(l1=1e-5, l2=1e-4),
-            input_dim=x_train.shape[1],
-            kernel_initializer=kernel_init
-        ))
+        classifier_model.add(
+            Dense(
+                units=32,
+                kernel_regularizer=keras.regularizers.l1_l2(l1=1e-5, l2=1e-4),
+                input_dim=x_train.shape[1],
+                kernel_initializer=kernel_init
+            )
+        )
         classifier_model.add(BatchNormalization())
         classifier_model.add(Activation('relu'))
         classifier_model.add(Dropout(0.2))
@@ -69,9 +59,11 @@ class ClassificationModel(MlModel):
         ))
         classifier_model.add(Activation('relu'))
         classifier_model.add(Dropout(0.2))
-        classifier_model.add(Dense(units=2, kernel_initializer=kernel_init))
+        classifier_model.add(Dense(
+            units=number_of_pigs,
+            kernel_initializer=kernel_init
+        ))
         classifier_model.add(Activation('softmax'))
-
         optimizer = keras.optimizers.Nadam(
             lr=0.0001,
             beta_1=0.9,
@@ -79,31 +71,24 @@ class ClassificationModel(MlModel):
             epsilon=1e-08,
             schedule_decay=0.004
         )
-        # optimizer = keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08)
-        # optimizer = keras.optimizers.SGD(lr=1e-4, decay=1e-6, momentum=0.9, nesterov=True)
-        # optimizer=keras.optimizers.SGD(learning_rate=0.0001)
         metrics = ['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
         loss = tf.keras.losses.SparseCategoricalCrossentropy()
         classifier_model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
         return classifier_model
 
     def fit(self, ml_data, batch_size, epochs):
-        """Trains the classifier on the current data"""
-        self.log.info('Train classifier...')
         x_train = np.array(ml_data.x_train)
         y_train = np.array(ml_data.y_train)
         x_test = np.array(ml_data.x_test)
         y_test = np.array(ml_data.y_test)
-
         tf.debugging.experimental.enable_dump_debug_info(
             self.logdir,
             tensor_debug_mode="FULL_HEALTH",
             circular_buffer_size=-1
         )
         lr_scheduler = LearningRateScheduler(self.scheduler)
-        cm_callback = keras.callbacks.LambdaCallback(
-            on_epoch_end=self.log_confusion_matrix
-        )
+        cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=self.log_confusion_matrix)
+
         callb = [
             cm_callback,
             lr_scheduler,
@@ -115,7 +100,8 @@ class ClassificationModel(MlModel):
                 update_freq='epoch',
                 profile_batch=2,
                 embeddings_freq=0,
-                embeddings_metadata=None),
+                embeddings_metadata=None
+            ),
             ModelCheckpoint(
                 self.checkpoint_path,
                 save_weights_only=True,
@@ -125,7 +111,6 @@ class ClassificationModel(MlModel):
                 verbose=1),
         ]
         self.summary_print()
-        # https://www.mt-ag.com/blog/ki-werkstatt/einstieg-in-neuronale-netze-mit-keras/ (batch_size in 2er Potenzen)
         self.model.fit(
             x_train,
             y_train,
@@ -135,17 +120,14 @@ class ClassificationModel(MlModel):
             validation_data=(x_test, y_test)
         )
 
-    def predict2(self, embed, left, top, right, bottom, pig_dict, img):
-        """TODO"""
-        self.log.info('Starting prediction 2...')
+    def predict(self, embed, left, top, right, bottom, pig_dict, img):
         width = right - left
         height = bottom - top
         img_opencv = np.array(img)
         pig = self.model.predict(embed)
         label_nr = np.argmax(pig)
-        print('Accuracy score: ', pig[0][label_nr])
-        # print('Accuracy score: ', pig[0][0][0][label_nr])
-        print('Type of Key at dic: ', type(pig_dict.keys()))
+        self.log.debug('Accuracy score: ', pig[0][label_nr])
+        self.log.debug('Type of Key at dic: ', type(pig_dict.keys()))
         if label_nr in pig_dict.keys():
             print('Key found')
             name = pig_dict[label_nr]
@@ -153,52 +135,35 @@ class ClassificationModel(MlModel):
             print('Key not found, try with string type')
             name = pig_dict[str(label_nr)]
         cv2.rectangle(img_opencv, (left, top), (right, bottom), (0, 255, 0), 2)
-        img = cv2.putText(img_opencv, name, (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 255), 2,
-                          cv2.LINE_AA)
-        img = cv2.putText(img_opencv, str(np.max(pig)), (right, bottom + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                          (0, 0, 255), 1, cv2.LINE_AA)
         return name
 
     def predict_label(self, embed):
-        """
-        Predicts the label
-        @Params:
-            - embed:
-        """
-        self.log.info('Predicting the labels...')
         pig = self.model.predict(embed)
         label_nr = np.argmax(pig)
         print('Accuracy score: ', pig[0][label_nr])
         return label_nr
 
     def get_model(self):
-        """Returns the classification model"""
-        self.log.info('Returning model...')
         return self.model
 
     def summary_print(self):
-        """Prints the overview of the model"""
-        self.log.info('Printing overview...')
         self.model.summary()
 
     def save_model(self):
         """Saves the model for later use"""
-        self.log.info('Saving model...')
+        self.log.info('Saving the model...')
         tf.keras.models.save_model(self.model, '../model/face_classifier_model.h5')
 
     def load_model(self):
         """Loads saved model"""
-        self.log.info('Loading saved model...')
+        self.log.info('Loading model...')
         self.model = tf.keras.models.load_model('../model/face_classifier_model.h5')
 
     def scheduler(self, epoch):
-        """Defines the scheduling function"""
-        self.log.info('Returning scheduling value...')
+        """Calculates the learning rate"""
         return 0.001 * 0.95 ** epoch
 
     def log_confusion_matrix(self, epoch, logs):
-        """Defines the confusion matrix"""
-        self.log.info('Defining actual confusion matrix...')
 
         # Use the model to predict the values from the test_images.
         test_pred_raw = self.model.predict(self.ml_data.x_test)
