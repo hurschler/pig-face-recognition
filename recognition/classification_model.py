@@ -34,6 +34,7 @@ class ClassificationModel(MlModel):
         self.log = logging.getLogger(__name__)
         self.log.info("Init Classification Model: " + __name__)
         x_train = np.array(ml_data.x_train)
+        self.number_of_pigs = number_of_pigs
         self.model = self.define_classification_model(x_train, number_of_pigs)
         self.ml_data = ml_data
 
@@ -119,6 +120,79 @@ class ClassificationModel(MlModel):
             callbacks=callb,
             validation_data=(x_test, y_test)
         )
+
+
+    def fit_with_k_fold(self, ml_data, batch_size, epochs, k):
+        # Merge inputs and targets
+        x_train = np.array(ml_data.x_train)
+        y_train = np.array(ml_data.y_train)
+        x_test = np.array(ml_data.x_test)
+        y_test = np.array(ml_data.y_test)
+        inputs = np.concatenate((x_train, x_test), axis=0)
+        targets = np.concatenate((y_train, y_test), axis=0)
+        kfold = KFold(n_splits=k, shuffle=True)
+        lr_scheduler = LearningRateScheduler(self.scheduler)
+        cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=self.log_confusion_matrix)
+
+        tf.debugging.experimental.enable_dump_debug_info(
+            self.logdir,
+            tensor_debug_mode="FULL_HEALTH",
+            circular_buffer_size=-1
+        )
+        callb = [
+            cm_callback,
+            lr_scheduler,
+            LRTensorBoard(
+                log_dir=self.logdir,
+                histogram_freq=1,
+                write_graph=False,
+                write_images=False,
+                update_freq='epoch',
+                profile_batch=2,
+                embeddings_freq=0,
+                embeddings_metadata=None
+            ),
+            ModelCheckpoint(
+                self.checkpoint_path,
+                save_weights_only=True,
+                save_best_only=True,
+                monitor="val_accuracy",
+                mode='max',
+                verbose=1
+            ),
+        ]
+        self.summary_print()
+
+        fold_no = 1
+        acc_per_fold = []
+        loss_per_fold = []
+        for train, test in kfold.split(inputs, targets):
+            self.model = self.define_classification_model(x_train, self.number_of_pigs)
+            history = self.model.fit(
+                inputs[train],
+                targets[train],
+                batch_size=batch_size,
+                epochs=epochs,
+                callbacks=callb,
+                validation_data=(x_test, y_test))
+            scores = self.model.evaluate(inputs[test], targets[test], verbose=1)
+            self.log.info('Score for fold ' + str(fold_no) + ' ' + self.model.metrics_names[0] + ' of ' +
+                          str(scores[0]) + ' ' + self.model.metrics_names[1] + ' of ' + str(scores[1]*100) + '%')
+            acc_per_fold.append(scores[1] * 100)
+            loss_per_fold.append(scores[0])
+            fold_no = fold_no + 1
+
+        self.log.info('-------------------------------------------------------------------------------------')
+        self.log.info('Avarage scores for all folds: ')
+        self.log.info('Accuracy: ' + str(np.mean(acc_per_fold)) + ' Std: ' + str(np.std(acc_per_fold)))
+        self.log.info('Loss: ' + str(np.mean(loss_per_fold)))
+        self.log.info('-------------------------------------------------------------------------------------')
+
+
+
+
+
+
 
     def predict(self, embed, left, top, right, bottom, pig_dict, img):
         width = right - left

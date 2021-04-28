@@ -59,7 +59,6 @@ class Vgg19(FeatureExtractionModel):
     def get_feature_vector_name(self):
         return 'data-vgg19.json'
 
-
     def remove_last_layer(self):
         # Remove Last Softmax layer and get model upto last flatten layer with outputs 2622 units
         self.model = Model(inputs=self.model.layers[0].input,

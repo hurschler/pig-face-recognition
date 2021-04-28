@@ -1,13 +1,12 @@
-from keras import backend as K
 from tensorflow.keras.layers import ZeroPadding2D, Convolution2D, MaxPooling2D
 from tensorflow.keras.layers import Dense, Dropout, Softmax, Flatten, Activation, BatchNormalization
-import os
 import numpy as np
 from matplotlib import pyplot
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from tensorflow.keras.applications.imagenet_utils import preprocess_input
 import logging.config
+import tensorflow as tf
 from keras.layers import Input
 from keras_vggface.vggface import VGGFace
 import util.logger_init
@@ -16,15 +15,15 @@ import keras
 
 
 # Wrapper Class around Keras Model
-class VggFaceModel:
+from recognition.feature_extraction_model import FeatureExtractionModel
+
+
+class VggFaceModel(FeatureExtractionModel):
 
     def __init__(self):
         self.log = logging.getLogger(__name__)
         self.log.info("init VggFaceModel")
         self.sequential_model = self.define_model_vggface16_backend()
-        # self.sequential_model = self.define_model_resnet_backend()
-        # self.sequential_model = self.define_model_senet_backend()
-
         self.model = self.sequential_model
 
 
@@ -144,12 +143,11 @@ class VggFaceModel:
         pyplot.show()
         # --------------   Debugging CNN ------------------------------
 
-    def get_embeddings(self, crop_img_name):
-        # Get Embeddings
-        # crop_img = load_img(os.getcwd() + '/' + crop_img_name, target_size=(224, 224))
-        crop_img = load_img(crop_img_name, target_size=(224, 224))
-        crop_img = img_to_array(crop_img)
-        crop_img = np.expand_dims(crop_img, axis=0)
-        crop_img = preprocess_input(crop_img)
-        return self.model(crop_img)
+    def preprocessing_input(self, image):
+        """Returns the data format of the VggFaceModel """
+        self.log.info('Starting preprocessing VggFaceModel net model...')
+        return tf.keras.applications.vgg16.preprocess_input(image)
+
+    def get_feature_vector_name(self):
+        return 'data-vgg-face.json'
 

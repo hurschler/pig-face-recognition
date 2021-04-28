@@ -107,6 +107,5 @@ class EfficientNetModel(FeatureExtractionModel):
         self.model.save_weights('../model/efficient_net_b7.h5')
 
     def get_embeddings(self, img):
-        """Returns model efficient_net with loaded image"""
-        self.log.info('Getting model...')
+        """Returns the embeddings from loaded image"""
         return self.model(img)

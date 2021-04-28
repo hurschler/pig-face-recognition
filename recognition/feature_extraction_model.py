@@ -22,4 +22,17 @@ class FeatureExtractionModel:
 
     def get_embeddings(self):
         self.log.info('Get embeddings...')
-        
+
+    def load_weights(self):
+        # self.sequential_model.load_weights('../model/vgg_face_weights.h5')$
+        # Todo get_target_size load_weights
+        print('Todo get_target_size load_weights')
+
+    def save_weights(self):
+        """Saves the weights in the model folder"""
+        self.log.info('Saving weights...')
+        self.model.save_weights('../model/inception_resnet_v2.h5')
+
+    def get_embeddings(self, img):
+        """Returns the embeddings from loaded image"""
+        return self.model(img)
