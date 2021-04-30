@@ -5,9 +5,6 @@ import classification_model
 import ml_util
 import logging.config
 import classification_auto_keras_model
-import inception_resnet_v2_model
-import nasnetlarge_model
-import xception_model
 import vgg_face_model
 from recognition import vgg19_model, resnet_model
 from util import confusion_matrix
