@@ -90,7 +90,7 @@ def calculate_feature_vectors_train(feature_extractor_model, ml_data):
                   'length of Feature-Vector: ', len(feature_vector), ' Feature-Vector: ', feature_vector)
 
 
-def calculate_feature_vectors_test(efficientnet_face_model, ml_data):
+def calculate_feature_vectors_test(feature_extractor_model, ml_data):
     """Calculates the feature vector of the test data set
     @Params:
     - class_model: specific class model of the algorithm
@@ -108,8 +108,8 @@ def calculate_feature_vectors_test(efficientnet_face_model, ml_data):
             img = load_img(os.path.join(img_path_crop, pig_name, image_name), target_size=feature_extractor_model.get_target_size())
             img = img_to_array(img)
             img = np.expand_dims(img, axis=0)
-            img = tf.keras.applications.efficientnet.preprocess_input(img)
-            img_encode = efficientnet_face_model.efficient_net_face(img)
+            img = feature_extractor_model.preprocessing_input(img)
+            img_encode = feature_extractor_model.get_embeddings(img)
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()
             ml_data.x_test.append(feature_vector)
             ml_data.y_test.append(i)

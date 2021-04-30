@@ -23,6 +23,17 @@ class EfficientNetModel(FeatureExtractionModel):
         self.log.info("Init EfficientNetModel")
         self.model = self.define_model()
 
+    def preprocessing_input(self, image):
+        """Returns the data format of the efficient net"""
+        self.log.info('Starting preprocessing efficient net model...')
+        return tf.keras.applications.efficientnet.preprocess_input(image)
+
+    def get_target_size(self):
+        return 600, 600
+
+    def get_feature_vector_name(self):
+        return 'data-effnet-b7.json'
+
     def define_model(self):
         """Defines the model of the EfficientNetB7"""
         self.log.info('Defining EfficientNetB7...')

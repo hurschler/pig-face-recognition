@@ -1,25 +1,19 @@
 import cv2
 import numpy as np
-# import sklearn
 import tensorflow as tf
 import keras
 import datetime
-from sklearn.metrics import confusion_matrix
-from keras.regularizers import l2
-from tensorflow.keras.models import load_model
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Dropout, Softmax, Flatten, Activation, BatchNormalization
-from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from tensorflow.python.keras.callbacks_v1 import TensorBoard
-from keras import backend as K
-from tensorflow.python.keras.layers import LeakyReLU, Normalization, LayerNormalization, PReLU
-import logging.config
-import util.logger_init
-import util.performance_visualization_callback as perfvis
-import util.tensorboard_util as tbutil
-from scikitplot.metrics import plot_confusion_matrix, plot_roc
 import matplotlib.pyplot as plt
+import logging.config
 
+from sklearn.model_selection import KFold
+
+import util.logger_init
+from sklearn.metrics import confusion_matrix
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Activation, BatchNormalization
+from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
+from scikitplot.metrics import plot_confusion_matrix, plot_roc
 from recognition.ml_model import LRTensorBoard
 from recognition.ml_model import MlModel
 from util.tensorboard_util import plot_confusion_matrix, plot_to_image
@@ -109,7 +103,8 @@ class ClassificationModel(MlModel):
                 save_best_only=True,
                 monitor="val_accuracy",
                 mode='max',
-                verbose=1),
+                verbose=1
+            ),
         ]
         self.summary_print()
         self.model.fit(
@@ -203,10 +198,10 @@ class ClassificationModel(MlModel):
         self.log.debug('Accuracy score: ', pig[0][label_nr])
         self.log.debug('Type of Key at dic: ', type(pig_dict.keys()))
         if label_nr in pig_dict.keys():
-            print('Key found')
+            self.log.log('Key found')
             name = pig_dict[label_nr]
         else:
-            print('Key not found, try with string type')
+            self.log.debug('Key not found, try with string type')
             name = pig_dict[str(label_nr)]
         cv2.rectangle(img_opencv, (left, top), (right, bottom), (0, 255, 0), 2)
         return name
@@ -253,7 +248,6 @@ class ClassificationModel(MlModel):
         y_test = np.array(self.ml_data.y_test)
         y_pred = np.asarray(self.model.predict((x_test, y_test)[0]))
         y_true = (x_test, y_test)[1]
-        y_pred_class = np.argmax(y_pred, axis=1)
         fig, ax = plt.subplots(figsize=(16, 12))
         plot_roc(y_true, y_pred, classes_to_plot=[0, 'cold'], ax=ax)
         roc_img = plot_to_image(fig)
