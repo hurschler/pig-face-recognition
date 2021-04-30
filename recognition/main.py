@@ -15,6 +15,16 @@ from util import confusion_matrix
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
+"""
+Network model options are:
+    - efficientnet_model
+    - inception_resnet_v2_model
+    - nasnetlarge_model
+    - resnet_model
+    - xception_model
+    - vgg_face_model
+"""
+
 # NETWORK_MODEL = efficientnet_model
 feature_extraction_model = vgg19_model.Vgg19()
 # feature_extraction_model = efficientnet_model.EfficientNetModel()
@@ -25,9 +35,6 @@ feature_extraction_model = vgg19_model.Vgg19()
 feature_extraction_model = vgg_face_model.VggFaceModel()
 
 
-"""Network model options are:
-    - efficientnet_model
-"""
 CALCULATE_VECTORS = False
 LOAD_WEIGHTS = True
 TRAIN_WITH_AUTOKERAS = False
