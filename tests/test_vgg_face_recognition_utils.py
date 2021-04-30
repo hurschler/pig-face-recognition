@@ -1,5 +1,5 @@
 import util.config as config
-import recognition.vgg_face_recognition_utils_v1 as vgg_face_utils
+import recognition.ml_util as vgg_face_utils
 from unittest import TestCase
 from recognition.ml_data import MlData
 
