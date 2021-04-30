@@ -31,7 +31,7 @@ class ReportCreator():
 
     def build_image_dictionary(self):
         self.log.info("read Information about Images")
-        dir_path = config.image_train_dir_path
+        dir_path = config.image_root_dir_path
         self.log.info("image_dir to build dictionary: " + dir_path)
         i = 0
         files = [x for x in os.listdir(dir_path) if (x.endswith('.jpg') or x.endswith('.JPG') or x.endswith('.png') or x.endswith('.PNG'))]
@@ -45,6 +45,7 @@ class ReportCreator():
             self.addRow(imageFullFileName, image_name=image_file_name, pig_name=pig_name)
             self.log.info(imageFullFileName)
             i = i + 1
+            self.log.info('Image count: ' + str(i))
 
 
 
@@ -145,6 +146,6 @@ class ReportCreator():
 report_creator = ReportCreator()
 report_creator.readExcelToPanda()
 report_creator.mergeRows()
-# report_creator.build_image_dictionary()
-# report_creator.writePandaToExcel()
+report_creator.build_image_dictionary()
+report_creator.writePandaToExcel()
 
