@@ -1,3 +1,5 @@
+import unittest
+
 import util.config as config
 import recognition.ml_util as vgg_face_utils
 from unittest import TestCase
@@ -11,6 +13,7 @@ class TestPreprocessing(TestCase):
     def setUp(self):
         self.ml_data = MlData([], [], [], [], {})
 
+    @unittest.skip('need a feature_extraction_model')
     def test_serialize_ml_data(self):
         """Tests the serialisation of ml_Data"""
         ml_data = self.ml_data
