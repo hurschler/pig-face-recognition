@@ -2,21 +2,10 @@ import tensorflow as tf
 import logging.config
 import datetime
 import logging.config
-import numpy as np
-import os
 from tensorflow.python.keras.applications.efficientnet import EfficientNetB7
 from tensorflow.python.keras.callbacks_v1 import TensorBoard
 from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from tensorflow.keras import layers
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-from tensorflow.keras.applications.imagenet_utils import preprocess_input
-from random import random
-from tensorflow.python.keras.layers import AveragePooling2D
-from tensorflow.python.ops.init_ops_v2 import glorot_uniform
-from tensorflow.keras.layers import ZeroPadding2D, Convolution2D, MaxPooling2D
-from tensorflow.keras.layers import Dense, Dropout, Softmax, Flatten, Activation, BatchNormalization
-from matplotlib import pyplot
-from tensorflow.keras.models import Sequential, Model
 
 
 # https://www.analyticsvidhya.com/blog/2020/08/top-4-pre-trained-models-for-image-classification-with-python-code/
