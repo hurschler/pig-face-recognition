@@ -157,4 +157,4 @@ util/saliency.ipynb
 /detection/model/*
 /detection/logs/*
 /feature_vector
-recognition/logs
+/recognition/logs
