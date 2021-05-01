@@ -13,13 +13,13 @@ os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # NETWORK_MODEL = efficientnet_model
-feature_extraction_model = vgg19_model.Vgg19()
-# feature_extraction_model = efficientnet_model.EfficientNetModel()
+# feature_extraction_model = vgg19_model.Vgg19()
+feature_extraction_model = efficientnet_model.EfficientNetModel()
 # feature_extraction_model = inception_resnet_v2_model.InceptionResNetV2()
 # feature_extraction_model = nasnetlarge_model.NasNetLarge()
 # feature_extraction_model = resnet_model.ResNetModel()
 # feature_extraction_model = xception_model.XceptionModel()
-feature_extraction_model = vgg_face_model.VggFaceModel()
+# feature_extraction_model = vgg_face_model.VggFaceModel()
 
 
 """Network model options are:
@@ -31,10 +31,11 @@ TRAIN_WITH_AUTOKERAS = False
 FIT_CLASSIFICATION_MODEL = True
 PREDICT_VALIDATION_SET = False
 PREDICT_SINGE_PIG_IMG = True
+KFOLD_VALIDATION = True
 PATH_TRAIN_DATA = ''
 PATH_TEST_DATA = ''
 batch_size = 10
-epochs = 50
+epochs = 200
 number_of_pigs = 20
 k = 5
 
@@ -72,8 +73,10 @@ if __name__ == '__main__':
 
     if FIT_CLASSIFICATION_MODEL:
         log.info('Starting training of the classification model...')
-        classification_model.fit(ml_data, batch_size=batch_size, epochs=epochs)
-        # classification_model.fit_with_k_fold(ml_data, batch_size=batch_size, epochs=epochs, k=k)
+        if KFOLD_VALIDATION:
+            classification_model.fit_with_k_fold(ml_data, batch_size=batch_size, epochs=epochs, k=k)
+        else:
+            classification_model.fit(ml_data, batch_size=batch_size, epochs=epochs)
         log.info('Saving trained model...')
         classification_model.save_model()
 

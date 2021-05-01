@@ -162,15 +162,19 @@ class ClassificationModel(MlModel):
         acc_per_fold = []
         loss_per_fold = []
         for train, test in kfold.split(inputs, targets):
-            self.model = self.define_classification_model(x_train, self.number_of_pigs)
+            fold_inputs_train = inputs[train]
+            fold_targets_train = targets[train]
+            fold_inputs_validate = inputs[test]
+            fold_targets_validate = targets[test]
+            self.model = self.define_classification_model(fold_inputs_train, self.number_of_pigs)
             history = self.model.fit(
-                inputs[train],
-                targets[train],
+                fold_inputs_train,
+                fold_targets_train,
                 batch_size=batch_size,
                 epochs=epochs,
                 callbacks=callb,
-                validation_data=(x_test, y_test))
-            scores = self.model.evaluate(inputs[test], targets[test], verbose=1)
+                validation_data=(fold_inputs_validate, fold_targets_validate))
+            scores = self.model.evaluate(fold_inputs_validate, fold_targets_validate, verbose=1)
             self.log.info('Score for fold ' + str(fold_no) + ' ' + self.model.metrics_names[0] + ' of ' +
                           str(scores[0]) + ' ' + self.model.metrics_names[1] + ' of ' + str(scores[1]*100) + '%')
             acc_per_fold.append(scores[1] * 100)
@@ -182,12 +186,6 @@ class ClassificationModel(MlModel):
         self.log.info('Accuracy: ' + str(np.mean(acc_per_fold)) + ' Std: ' + str(np.std(acc_per_fold)))
         self.log.info('Loss: ' + str(np.mean(loss_per_fold)))
         self.log.info('-------------------------------------------------------------------------------------')
-
-
-
-
-
-
 
     def predict(self, embed, left, top, right, bottom, pig_dict, img):
         width = right - left
