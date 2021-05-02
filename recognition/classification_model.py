@@ -193,16 +193,17 @@ class ClassificationModel(MlModel):
         img_opencv = np.array(img)
         pig = self.model.predict(embed)
         label_nr = np.argmax(pig)
-        self.log.debug('Accuracy score: ', pig[0][label_nr])
+        acc = pig[0][label_nr]
+        self.log.debug('Accuracy score: ', acc)
         self.log.debug('Type of Key at dic: ', type(pig_dict.keys()))
         if label_nr in pig_dict.keys():
-            self.log.log('Key found')
+            self.log.info('Key found')
             name = pig_dict[label_nr]
         else:
             self.log.debug('Key not found, try with string type')
             name = pig_dict[str(label_nr)]
-        cv2.rectangle(img_opencv, (left, top), (right, bottom), (0, 255, 0), 2)
-        return name
+        # cv2.rectangle(img_opencv, (left, top), (right, bottom), (0, 255, 0), 2)
+        return name, acc
 
     def predict_label(self, embed):
         pig = self.model.predict(embed)
@@ -247,10 +248,10 @@ class ClassificationModel(MlModel):
         y_pred = np.asarray(self.model.predict((x_test, y_test)[0]))
         y_true = (x_test, y_test)[1]
         fig, ax = plt.subplots(figsize=(16, 12))
-        plot_roc(y_true, y_pred, classes_to_plot=[0, 'cold'], ax=ax)
-        roc_img = plot_to_image(fig)
+        # plot_roc(y_true, y_pred, classes_to_plot=[0, 'cold'], ax=ax)
+        # roc_img = plot_to_image(fig)
 
         # Log the confusion matrix as an image summary.
         with self.file_writer_cm.as_default():
             tf.summary.image("Confusion Matrix", cm_image, step=epoch)
-            tf.summary.image("ROC Curve", roc_img, step=epoch)
+        #    tf.summary.image("ROC Curve", roc_img, step=epoch)

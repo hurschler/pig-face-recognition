@@ -54,3 +54,8 @@ image_upload_dir_path = config.get('glob', 'image_upload_dir_path')
 test_images_only = config.get('glob', 'test_images_only')
 test_json = config.get('glob', 'test_json')
 
+# Add new Pig
+image_new_pig_path_train = config.get('glob', 'image_new_pig_path_train')
+image_new_pig_path_validation = config.get('glob', 'image_new_pig_path_validation')
+
+

@@ -2,6 +2,7 @@ import os
 import cv2
 import glob
 import numpy as np
+import json
 import matplotlib.pyplot as plt
 from keras_preprocessing.image import ImageDataGenerator
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
@@ -105,7 +106,8 @@ def calculate_feature_vectors_test(feature_extractor_model, ml_data):
         ml_data.pig_dict[i] = pig_name
         image_names = os.listdir(os.path.join(img_path_crop, pig_name))
         for image_name in image_names:
-            img = load_img(os.path.join(img_path_crop, pig_name, image_name), target_size=feature_extractor_model.get_target_size())
+            img = load_img(os.path.join(img_path_crop, pig_name, image_name),
+                           target_size=feature_extractor_model.get_target_size())
             img = img_to_array(img)
             img = np.expand_dims(img, axis=0)
             img = feature_extractor_model.preprocessing_input(img)
@@ -115,6 +117,42 @@ def calculate_feature_vectors_test(feature_extractor_model, ml_data):
             ml_data.y_test.append(i)
             print('TEST-Vector: pig-number: ', i, ' pig_name: ', pig_name, 'image_name:  ', image_name,
                   'length of Feature-Vector: ', len(feature_vector), ' Feature-Vector: ', feature_vector)
+
+
+def calculate_single_feature_vectors(feature_extractor_model, new_pig_path, img_name):
+    log.info('Calculating a single feature vectors...')
+    img = load_img(os.path.join(new_pig_path, img_name), target_size=feature_extractor_model.get_target_size())
+    img = img_to_array(img)
+    img = np.expand_dims(img, axis=0)
+    img = feature_extractor_model.preprocessing_input(img)
+    img_encode = feature_extractor_model.get_embeddings(img)
+    feature_vector = np.squeeze(K.eval(img_encode)).tolist()
+    print('image_path:  ', new_pig_path,
+          'length of Feature-Vector: ', len(feature_vector), ' Feature-Vector: ', feature_vector)
+    return feature_vector
+
+
+def add_new_pig_to_feature_vector_set(feature_extractor_model, pig_name, number_of_pigs, ml_data):
+    log.info('add feature-vectors of the new pig to the training set')
+    new_pig_path_train = config.image_new_pig_path_train
+    new_pig_path_train = os.path.join(new_pig_path_train, str(pig_name))
+    image_names = os.listdir(new_pig_path_train)
+    for image_name in image_names:
+        feature_vector = calculate_single_feature_vectors(feature_extractor_model, new_pig_path_train, image_name)
+        ml_data.x_train.append(feature_vector)
+        ml_data.y_train.append(number_of_pigs - 1)
+    ml_data.pig_dict[number_of_pigs - 1] = pig_name
+
+    image_new_pig_path_validation = config.image_new_pig_path_validation
+    image_new_pig_path_validation = os.path.join(image_new_pig_path_validation, str(pig_name))
+    image_names = os.listdir(image_new_pig_path_validation)
+    for image_name in image_names:
+        feature_vector = calculate_single_feature_vectors(feature_extractor_model,
+                                                          image_new_pig_path_validation, image_name)
+        ml_data.x_test.append(feature_vector)
+        ml_data.y_test.append(number_of_pigs - 1)
+
+    return ml_data
 
 
 def plot(img):
@@ -134,8 +172,9 @@ def predict(feature_extraction_model, classification_model, ml_data, img_name):
     img = feature_extraction_model.preprocessing_input(img)
     width, height = feature_extraction_model.get_target_size()
     img_encode = feature_extraction_model.get_embeddings(img)
-    log.info('pig_name: ' + img_name + 'length of Feature-Vector: ' + str(len(img_encode)) + ' Feature-Vector: ' + str(img_encode))
-    name = classification_model.predict(img_encode, 0, 0, width, height, ml_data.pig_dict, img)
+    log.info('pig_name: ' + img_name + 'length of Feature-Vector: ' + str(len(img_encode)) + ' Feature-Vector: ' + str(
+        img_encode))
+    name, acc = classification_model.predict(img_encode, 0, 0, width, height, ml_data.pig_dict, img)
     persons_in_img.append(name)
     # Save images with bounding box,name and accuracy
     img_opencv = np.array(img)
@@ -143,7 +182,8 @@ def predict(feature_extraction_model, classification_model, ml_data, img_name):
     cv2.imwrite('../output/recognized_img.jpg', np.array(img_opencv))
     # Pig in image
     log.info('Pig(s) in image is/are:' + ' '.join([str(elem) for elem in persons_in_img]))
-    return img_opencv
+    return name, acc
+
 
 def predict_validation_set(feature_extraction_model, classification_model, ml_data):
     log.info("readImages names with sub dir")
@@ -170,6 +210,7 @@ def predict_validation_set(feature_extraction_model, classification_model, ml_da
 
     return y_pred
 
+
 def predict_label(feature_extraction_model, classification_model, ml_data, img_name):
     target_size = feature_extraction_model.get_target_size()
     img_pil = load_img(img_name, target_size=target_size)
@@ -183,3 +224,12 @@ def predict_label(feature_extraction_model, classification_model, ml_data, img_n
         label_nr = classification_model.predict_label(img_encode)
 
     return label_nr
+
+def export_result_to_json(uuid, pig_name, accuracy):
+    result = json.dumps({"uuid": uuid, "pig_name": str(pig_name), "accuracy": str(accuracy)})
+    log.info(result)
+    path = config.output_dir_path
+    path = os.path.join(path, 'result-' + uuid + '.json')
+    with open(path, "w") as fh:
+        fh.write(result)
+
