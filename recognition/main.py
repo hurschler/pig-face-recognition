@@ -28,15 +28,15 @@ feature_extraction_model = efficientnet_model.EfficientNetModel()
 CALCULATE_VECTORS = False
 LOAD_WEIGHTS = True
 TRAIN_WITH_AUTOKERAS = False
-FIT_CLASSIFICATION_MODEL = False
+FIT_CLASSIFICATION_MODEL = True
 PREDICT_VALIDATION_SET = False
 PREDICT_SINGE_PIG_IMG = True
-KFOLD_VALIDATION = False
+KFOLD_VALIDATION = True
 EXPORT_RESULT_AS_JSON = True
 PATH_TRAIN_DATA = ''
 PATH_TEST_DATA = ''
 batch_size = 10
-epochs = 200
+epochs = 100
 number_of_pigs = 20
 k = 5
 
@@ -91,4 +91,4 @@ if __name__ == '__main__':
     if PREDICT_SINGE_PIG_IMG:
         img_name_full_path = r"G:\temp\pig-face-rectangle-test\6446\DSC_V2_6446_2774.JPG-crop-mask0.jpg"
         predict, acc = ml_util.predict(feature_extraction_model, classification_model, ml_data, img_name_full_path)
-        ml_util.export_result_to_json(img_name= os.path.basename(img_name_full_path), pig_name=predict, accuracy= acc)
+        ml_util.export_result_to_json(uuid=os.path.basename(img_name_full_path), pig_name=predict, accuracy= acc)

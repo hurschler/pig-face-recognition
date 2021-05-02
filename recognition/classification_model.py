@@ -255,3 +255,4 @@ class ClassificationModel(MlModel):
         with self.file_writer_cm.as_default():
             tf.summary.image("Confusion Matrix", cm_image, step=epoch)
         #    tf.summary.image("ROC Curve", roc_img, step=epoch)
+        plt.close('all')

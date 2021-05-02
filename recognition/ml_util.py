@@ -134,8 +134,9 @@ def calculate_single_feature_vectors(feature_extractor_model, new_pig_path, img_
 
 def add_new_pig_to_feature_vector_set(feature_extractor_model, pig_name, number_of_pigs, ml_data):
     log.info('add feature-vectors of the new pig to the training set')
-    new_pig_path_train = config.image_new_pig_path_train
-    new_pig_path_train = os.path.join(new_pig_path_train, str(pig_name))
+    # new_pig_path_train = config.image_new_pig_path_train
+    new_pig_path = '../input'
+    new_pig_path_train = os.path.join(new_pig_path, str(pig_name), 'train')
     image_names = os.listdir(new_pig_path_train)
     for image_name in image_names:
         feature_vector = calculate_single_feature_vectors(feature_extractor_model, new_pig_path_train, image_name)
@@ -143,8 +144,8 @@ def add_new_pig_to_feature_vector_set(feature_extractor_model, pig_name, number_
         ml_data.y_train.append(number_of_pigs - 1)
     ml_data.pig_dict[number_of_pigs - 1] = pig_name
 
-    image_new_pig_path_validation = config.image_new_pig_path_validation
-    image_new_pig_path_validation = os.path.join(image_new_pig_path_validation, str(pig_name))
+    # image_new_pig_path_validation = config.image_new_pig_path_validation
+    image_new_pig_path_validation = os.path.join(new_pig_path, str(pig_name), 'test')
     image_names = os.listdir(image_new_pig_path_validation)
     for image_name in image_names:
         feature_vector = calculate_single_feature_vectors(feature_extractor_model,
@@ -226,7 +227,7 @@ def predict_label(feature_extraction_model, classification_model, ml_data, img_n
     return label_nr
 
 def export_result_to_json(uuid, pig_name, accuracy):
-    result = json.dumps({"uuid": uuid, "pig_name": str(pig_name), "accuracy": str(accuracy)})
+    result = json.dumps({"imageId": uuid, "pig_name": str(pig_name), "accuracy": str(accuracy)})
     log.info(result)
     path = config.output_dir_path
     path = os.path.join(path, 'result-' + uuid + '.json')
