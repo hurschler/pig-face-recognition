@@ -7,12 +7,13 @@ import matplotlib.pyplot as plt
 import logging.config
 
 from sklearn.model_selection import KFold
+from tensorflow.python.keras.layers import LeakyReLU, ReLU
 
 import util.logger_init
 from sklearn.metrics import confusion_matrix
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Activation, BatchNormalization
-from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
+from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler, ReduceLROnPlateau
 from scikitplot.metrics import plot_confusion_matrix, plot_roc
 from recognition.ml_model import LRTensorBoard
 from recognition.ml_model import MlModel
@@ -24,7 +25,7 @@ class ClassificationModel(MlModel):
     def __init__(self, ml_data, number_of_pigs):
         self.logdir = "../logs/recognition/logs/scalars/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         self.file_writer_cm = tf.summary.create_file_writer(self.logdir + '/cm')
-        self.checkpoint_path = '../model/face_model'
+        self.checkpoint_path = '../model/classification_model'
         self.log = logging.getLogger(__name__)
         self.log.info("Init Classification Model: " + __name__)
         x_train = np.array(ml_data.x_train)
@@ -34,7 +35,7 @@ class ClassificationModel(MlModel):
 
     def define_classification_model(self, x_train, number_of_pigs):
         """Softmax regressor to classify images based on encoding"""
-        kernel_init = keras.initializers.lecun_normal()
+        kernel_init = keras.initializers.he_normal()
         classifier_model = Sequential()
         classifier_model.add(
             Dense(
@@ -45,31 +46,33 @@ class ClassificationModel(MlModel):
             )
         )
         classifier_model.add(BatchNormalization())
-        classifier_model.add(Activation('relu'))
+        classifier_model.add(ReLU())
         classifier_model.add(Dropout(0.2))
         classifier_model.add(Dense(
             units=32,
             kernel_regularizer=keras.regularizers.l1_l2(l1=1e-5, l2=1e-4),
             kernel_initializer=kernel_init
         ))
-        classifier_model.add(Activation('relu'))
+        classifier_model.add(ReLU())
         classifier_model.add(Dropout(0.2))
         classifier_model.add(Dense(
             units=number_of_pigs,
             kernel_initializer=kernel_init
         ))
         classifier_model.add(Activation('softmax'))
-        optimizer = keras.optimizers.Nadam(
-            lr=0.0001,
-            beta_1=0.9,
-            beta_2=0.999,
-            epsilon=1e-08,
-            schedule_decay=0.004
-        )
+        optimizer = keras.optimizers.Adam()
         metrics = ['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
         loss = tf.keras.losses.SparseCategoricalCrossentropy()
         classifier_model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
         return classifier_model
+
+
+
+    def evaluate(self, ml_data):
+        x_test = np.array(ml_data.x_test)
+        y_test = np.array(ml_data.y_test)
+        loss, accuracy, f1_score, precision, recall = self.model.evaluate(x=x_test, y=y_test)
+        self.log.info('accuracy: ' + str(accuracy))
 
     def fit(self, ml_data, batch_size, epochs):
         x_train = np.array(ml_data.x_train)
@@ -83,10 +86,20 @@ class ClassificationModel(MlModel):
         )
         lr_scheduler = LearningRateScheduler(self.scheduler)
         cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=self.log_confusion_matrix)
+        early_stopping = keras.callbacks.EarlyStopping(
+            monitor="val_loss",
+            min_delta=0,
+            patience=20,
+            verbose=1,
+            mode="auto",
+            baseline=None,
+            restore_best_weights=True,
+        )
 
         callb = [
             cm_callback,
             lr_scheduler,
+            early_stopping,
             LRTensorBoard(
                 log_dir=self.logdir,
                 histogram_freq=1,
@@ -107,7 +120,7 @@ class ClassificationModel(MlModel):
             ),
         ]
         self.summary_print()
-        self.model.fit(
+        history = self.model.fit(
             x_train,
             y_train,
             batch_size=batch_size,
@@ -115,6 +128,9 @@ class ClassificationModel(MlModel):
             callbacks=callb,
             validation_data=(x_test, y_test)
         )
+        best_val_accuracy = max(history.history['val_accuracy'])
+        self.log.info('------- Best Val-Accuracy: ' + str(best_val_accuracy) + ' -------------------')
+
 
 
     def fit_with_k_fold(self, ml_data, batch_size, epochs, k):

@@ -45,10 +45,9 @@ class EfficientNetModel(FeatureExtractionModel):
         )
         model.trainable = True
         x = model.output
+        # Convert features of shape `base_model.output_shape[1:]` to vectors
         x = layers.GlobalAveragePooling2D(name="avg_pool")(x)
-        # x = tf.keras.layers.Dense(1,activation='sigmoid')(x)
         model = tf.keras.Model(inputs, outputs=x, name="EfficientNet")
-        # optimizer = tf.keras.optimizers.Adam(learning_rate=1e-2)
         optimizer = tf.keras.optimizers.SGD(learning_rate=0.01)
         metrics = ['accuracy', 'mse', 'categorical_accuracy', 'top_k_categorical_accuracy']
         loss = tf.keras.losses.SparseCategoricalCrossentropy()

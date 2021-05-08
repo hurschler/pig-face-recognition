@@ -6,7 +6,7 @@ import ml_util
 import logging.config
 import classification_auto_keras_model
 import vgg_face_model
-from recognition import vgg19_model, resnet_model
+from recognition import vgg19_model, resnet_model, nasnetlarge_model
 from util import confusion_matrix
 
 os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
@@ -15,10 +15,8 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 # NETWORK_MODEL = efficientnet_model
 # feature_extraction_model = vgg19_model.Vgg19()
 feature_extraction_model = efficientnet_model.EfficientNetModel()
-# feature_extraction_model = inception_resnet_v2_model.InceptionResNetV2()
 # feature_extraction_model = nasnetlarge_model.NasNetLarge()
 # feature_extraction_model = resnet_model.ResNetModel()
-# feature_extraction_model = xception_model.XceptionModel()
 # feature_extraction_model = vgg_face_model.VggFaceModel()
 
 
@@ -28,11 +26,11 @@ feature_extraction_model = efficientnet_model.EfficientNetModel()
 CALCULATE_VECTORS = False
 LOAD_WEIGHTS = True
 TRAIN_WITH_AUTOKERAS = False
-FIT_CLASSIFICATION_MODEL = True
+FIT_CLASSIFICATION_MODEL = False
 PREDICT_VALIDATION_SET = False
-PREDICT_SINGE_PIG_IMG = True
-KFOLD_VALIDATION = True
-EXPORT_RESULT_AS_JSON = True
+PREDICT_SINGE_PIG_IMG = False
+KFOLD_VALIDATION = False
+EXPORT_RESULT_AS_JSON = False
 PATH_TRAIN_DATA = ''
 PATH_TEST_DATA = ''
 batch_size = 10
@@ -83,6 +81,8 @@ if __name__ == '__main__':
 
     log.info('Loading classification model')
     classification_model.load_model()
+
+    classification_model.evaluate(ml_data)
 
     if PREDICT_VALIDATION_SET:
         predict = ml_util.predict_validation_set(feature_extraction_model, classification_model, ml_data)
