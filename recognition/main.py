@@ -13,8 +13,8 @@ os.environ['TF_XLA_FLAGS'] = '--tf_xla_enable_xla_devices'
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # NETWORK_MODEL = efficientnet_model
-# feature_extraction_model = vgg19_model.Vgg19()
-feature_extraction_model = efficientnet_model.EfficientNetModel()
+feature_extraction_model = vgg19_model.Vgg19()
+# feature_extraction_model = efficientnet_model.EfficientNetModel()
 # feature_extraction_model = nasnetlarge_model.NasNetLarge()
 # feature_extraction_model = resnet_model.ResNetModel()
 # feature_extraction_model = vgg_face_model.VggFaceModel()
@@ -26,7 +26,7 @@ feature_extraction_model = efficientnet_model.EfficientNetModel()
 CALCULATE_VECTORS = False
 LOAD_WEIGHTS = True
 TRAIN_WITH_AUTOKERAS = False
-FIT_CLASSIFICATION_MODEL = False
+FIT_CLASSIFICATION_MODEL = True
 PREDICT_VALIDATION_SET = False
 PREDICT_SINGE_PIG_IMG = False
 KFOLD_VALIDATION = False
@@ -56,7 +56,7 @@ if __name__ == '__main__':
         log.info('Loading weights...')
         feature_extraction_model.load_weights()
     log.info('Preparing data structures...')
-    ml_data = ml_data.MlData([], [], [], [], {})
+    ml_data = ml_data.MlData([], [], [], [], {}, {}, {}, {}, [],[],[],[])
 
     if CALCULATE_VECTORS:
         ml_util.calculate_feature_vectors_train(feature_extraction_model, ml_data)

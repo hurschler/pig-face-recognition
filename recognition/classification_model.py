@@ -141,6 +141,14 @@ class ClassificationModel(MlModel):
         y_test = np.array(ml_data.y_test)
         inputs = np.concatenate((x_train, x_test), axis=0)
         targets = np.concatenate((y_train, y_test), axis=0)
+
+        orig_x_train = np.array(ml_data.orig_x_train)
+        orig_y_train = np.array(ml_data.orig_y_train)
+        orig_x_test = np.array(ml_data.orig_x_test)
+        orig_y_test = np.array(ml_data.orig_y_test)
+        orig_inputs = np.concatenate((orig_x_train, orig_x_test), axis=0)
+        orig_targets = np.concatenate((orig_y_train, orig_y_test), axis=0)
+
         kfold = KFold(n_splits=k, shuffle=True)
         lr_scheduler = LearningRateScheduler(self.scheduler)
         cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=self.log_confusion_matrix)
@@ -177,11 +185,27 @@ class ClassificationModel(MlModel):
         fold_no = 1
         acc_per_fold = []
         loss_per_fold = []
-        for train, test in kfold.split(inputs, targets):
-            fold_inputs_train = inputs[train]
-            fold_targets_train = targets[train]
-            fold_inputs_validate = inputs[test]
-            fold_targets_validate = targets[test]
+        for train, test in kfold.split(orig_inputs, orig_targets):
+            new_train = []
+            for train_element in train:
+                orig_index_value = ml_data.orig_index[str(train_element)]
+                orig_img_name = ml_data.index_to_image_name[str(orig_index_value)]
+                for key, value in ml_data.index_to_image_name.items():
+                    if value.find(orig_img_name) != -1:
+                        new_train.append(int(key))
+
+            new_test = []
+            for test_element in test:
+                orig_index_value = ml_data.orig_index[str(test_element)]
+                orig_img_name = ml_data.index_to_image_name[str(orig_index_value)]
+                for key, value in ml_data.index_to_image_name.items():
+                    if value.find(orig_img_name) != -1:
+                        new_test.append(int(key))
+
+            fold_inputs_train = inputs[new_train]
+            fold_targets_train = targets[new_train]
+            fold_inputs_validate = inputs[new_test]
+            fold_targets_validate = targets[new_test]
             self.model = self.define_classification_model(fold_inputs_train, self.number_of_pigs)
             history = self.model.fit(
                 fold_inputs_train,

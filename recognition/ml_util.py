@@ -62,6 +62,8 @@ def load_validate_dataset():
         class_mode='binary')
     return validation_generator
 
+def check_is_augmented_image_name(image_name):
+    return not image_name.startswith("DSC")
 
 def calculate_feature_vectors_train(feature_extractor_model, ml_data):
     """Calculates the feature vector of the train data set
@@ -74,6 +76,8 @@ def calculate_feature_vectors_train(feature_extractor_model, ml_data):
     log.info('Calculating feature vectors of the train data...')
     img_path_crop = config.output_path_cropped_rectangle
     pig_img_folders = os.listdir(img_path_crop)
+    img_index = 0
+    orig_img_index = 0
     for i, pig_name in enumerate(pig_img_folders):
         ml_data.pig_dict[i] = pig_name
         image_names = os.listdir(os.path.join(img_path_crop, pig_name))
@@ -87,6 +91,18 @@ def calculate_feature_vectors_train(feature_extractor_model, ml_data):
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()
             ml_data.x_train.append(feature_vector)
             ml_data.y_train.append(i)
+
+            ml_data.index_to_image_name[img_index] = image_name
+            if check_is_augmented_image_name(image_name):
+                orig_image_name = image_name.partition("-")[2]
+                ml_data.image_name_to_orig_image[image_name] = orig_image_name
+            else:
+                ml_data.orig_x_train.append(feature_vector)
+                ml_data.orig_y_train.append(i)
+                ml_data.orig_index[orig_img_index] = img_index
+                ml_data.image_name_to_orig_image[image_name] = image_name
+                orig_img_index = orig_img_index + 1
+            img_index = img_index + 1
             print('TRAIN pig-number: ', i, ' pig_name: ', pig_name, 'image_name:  ', image_name,
                   'length of Feature-Vector: ', len(feature_vector), ' Feature-Vector: ', feature_vector)
 
@@ -102,6 +118,10 @@ def calculate_feature_vectors_test(feature_extractor_model, ml_data):
     log.info('Calculating feature vectors of the test data...')
     img_path_crop = config.output_path_cropped_rectangle_test
     pig_img_folders = os.listdir(img_path_crop)
+    img_index = ml_data.last_key_value_of(ml_data.index_to_image_name)
+    img_index = img_index + 1
+    orig_img_index = ml_data.last_key_value_of(ml_data.orig_index)
+    orig_img_index = orig_img_index + 1
     for i, pig_name in enumerate(pig_img_folders):
         ml_data.pig_dict[i] = pig_name
         image_names = os.listdir(os.path.join(img_path_crop, pig_name))
@@ -115,6 +135,18 @@ def calculate_feature_vectors_test(feature_extractor_model, ml_data):
             feature_vector = np.squeeze(K.eval(img_encode)).tolist()
             ml_data.x_test.append(feature_vector)
             ml_data.y_test.append(i)
+
+            ml_data.index_to_image_name[img_index] = image_name
+            if check_is_augmented_image_name(image_name):
+                orig_image_name = image_name.partition("-")[2]
+                ml_data.image_name_to_orig_image[image_name] = orig_image_name
+            else:
+                ml_data.orig_x_test.append(feature_vector)
+                ml_data.orig_y_test.append(i)
+                ml_data.orig_index[orig_img_index] = img_index
+                ml_data.image_name_to_orig_image[image_name] = image_name
+                orig_img_index = orig_img_index + 1
+            img_index = img_index + 1
             print('TEST-Vector: pig-number: ', i, ' pig_name: ', pig_name, 'image_name:  ', image_name,
                   'length of Feature-Vector: ', len(feature_vector), ' Feature-Vector: ', feature_vector)
 
