@@ -194,7 +194,6 @@ def get_recognition_result():
             except IOError:
                 log.error("IOError: " + recognition_result_path)
         else:
-            i = i + 1
             log.info("File not exist: " + recognition_result_path)
             time.sleep(0.2)
     return data
